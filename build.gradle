@@ -1,0 +1,21 @@
+apply plugin: 'java-library'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // DV8FromTheWorld's JDA.
+    compile 'net.dv8tion:JDA:3.6.0_375'
+    // SLF4J Logger.
+    compile 'org.slf4j:slf4j-api:1.8.0-beta2'
+    // Gson for Json files.
+    implementation 'com.google.code.gson:gson:2.8.5'
+    // Apache Commons.io.
+    compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
+    // SQLite.
+    compile 'org.xerial:sqlite-jdbc:3.20.0'
+
+    // JUnit test framework
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
