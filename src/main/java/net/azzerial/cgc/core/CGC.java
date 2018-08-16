@@ -19,8 +19,7 @@ public class CGC {
 	
 	// Non error exit codes.
 	public static final int NORMAL_SHUTDOWN = 0;
-	public static final int RESTART_SHUTDOWN = 1;
-	public static final int NEWLY_CREATED_FILE = 2;
+	public static final int NEWLY_CREATED_FILE = 1;
 	
 	// Error exit codes.
 	public static final int INVALID_INFORMATION_PROVIDED = 10;

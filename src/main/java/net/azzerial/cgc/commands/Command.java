@@ -23,6 +23,8 @@ public abstract class Command extends ListenerAdapter {
 	public abstract List<String> getAliases();
 	public abstract String getName();
 	public abstract String getGithubPage();
+	public abstract String getHelpDescription();
+	public abstract String getHelpUsage();
 	public abstract boolean isAdminRequired();
 	public abstract boolean isOpRequired();
 

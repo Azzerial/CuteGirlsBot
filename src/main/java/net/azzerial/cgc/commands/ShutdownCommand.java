@@ -1,6 +1,5 @@
 package net.azzerial.cgc.commands;
 
-import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.core.CGC;
 import net.azzerial.cgc.utils.MessageUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -43,7 +42,17 @@ public class ShutdownCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return (null);
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/Shutdown");
+	}
+
+	@Override
+	public String getHelpDescription() {
+		return ("Shutdowns the bot.");
+	}
+
+	@Override
+	public String getHelpUsage() {
+		return ("```md\n/shutdown\n```");
 	}
 
 	@Override
