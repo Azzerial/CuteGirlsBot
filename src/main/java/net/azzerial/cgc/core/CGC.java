@@ -7,10 +7,14 @@ import java.net.URLDecoder;
 
 import javax.security.auth.login.LoginException;
 
+import net.azzerial.cgc.commands.DailyCommand;
 import net.azzerial.cgc.commands.HelpCommand;
 import net.azzerial.cgc.commands.ShutdownCommand;
+import net.azzerial.cgc.commands.TestCommand;
 import net.azzerial.cgc.database.Database;
+import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.Permissions;
+import net.azzerial.imcg.core.IdolList;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -58,8 +62,15 @@ public class CGC {
 	
 	private static void setupBot() {
 		try {
+			// Load bot configuration settings.
 			Settings settings = SettingsManager.getInstance().getSettings();
+
+			// Cache database.
 			Database.getInstance();
+			DatabaseUserManager.loadUsers();
+
+			// Load the idols list.
+			IdolList.loadIdols();
 
 			// Set the Ops list.
 			Permissions.setupPermissions();
@@ -76,7 +87,9 @@ public class CGC {
 			// Register the commands.
 			HelpCommand command = new HelpCommand();
 			jda_builder.addEventListener(command.registerCommand(command));
+			jda_builder.addEventListener(command.registerCommand(new DailyCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShutdownCommand()));
+			jda_builder.addEventListener(command.registerCommand(new TestCommand()));
 			
 			// Login to Discord.
 			api = jda_builder.buildBlocking();

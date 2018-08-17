@@ -53,9 +53,9 @@ public class HelpCommand extends Command {
 			}
 
 			EmbedBuilder builder = new EmbedBuilder();
-			builder.setAuthor(EmoteUtil.OPEN_BOOK + " Cute Girls Collection commands.", getGithubPage(), author.getAvatarUrl());
+			builder.setAuthor("Cute Girls Collection commands.", getGithubPage(), EmoteUtil.OPEN_BOOK_IMAGE);
 			builder.setDescription(MiscUtil.listToString(list, ", "));
-			builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+			builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 			builder.setColor(new Color(255, 226, 148));
 			MessageEmbed embed = builder.build();
 			MessageBuilder mBuilder = new MessageBuilder(embed);

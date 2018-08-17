@@ -12,16 +12,16 @@ public class MessageUtil {
 // --- Message Senders ---
 
 	public static void sendActionMessage(MessageChannel channel,
-			String actionResult, String githubPage,
-			User author,
-			String actionDetails,
-			String thumbnailUrl, String imageUrl,
-			Consumer<? super Message> restAction) {
+					     String icon, String actionResult, String githubPage,
+					     User author,
+					     String actionDetails,
+					     String thumbnailUrl, String imageUrl,
+					     Consumer<? super Message> restAction) {
 		if (author == null) {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(actionResult, githubPage, author.getAvatarUrl());
+		builder.setAuthor(actionResult, githubPage, icon);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -29,7 +29,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(255, 186, 212));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
@@ -42,16 +42,16 @@ public class MessageUtil {
 	}
 
 	public static void sendErrorMessage(MessageChannel channel,
-			String errorName, String githubPage,
-			User author,
-			String errorDetails,
-			String thumbnailUrl, String imageUrl,
-			Consumer<? super Message> restAction) {
+					    String errorName, String githubPage,
+					    User author,
+					    String errorDetails,
+					    String thumbnailUrl, String imageUrl,
+					    Consumer<? super Message> restAction) {
 		if (author == null) {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(EmoteUtil.WARNING + " Error: " + errorName, githubPage, author.getAvatarUrl());
+		builder.setAuthor(errorName, githubPage, EmoteUtil.WARNING_IMAGE);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -59,7 +59,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(255, 67, 101));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
@@ -72,16 +72,16 @@ public class MessageUtil {
 	}
 
 	public static void sendHelpMessage(MessageChannel channel,
-					    String helpName, String githubPage,
-					    User author,
-					    String helpDescription, String helpUsage,
-					    String thumbnailUrl, String imageUrl,
-					    Consumer<? super Message> restAction) {
+					   String helpName, String githubPage,
+					   User author,
+					   String helpDescription, String helpUsage,
+					   String thumbnailUrl, String imageUrl,
+					   Consumer<? super Message> restAction) {
 		if (author == null) {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(EmoteUtil.OPEN_BOOK + " " + helpName, githubPage, author.getAvatarUrl());
+		builder.setAuthor(helpName, githubPage, EmoteUtil.OPEN_BOOK_IMAGE);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -90,7 +90,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(255, 226, 148));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
@@ -113,7 +113,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(EmoteUtil.MAGNIFYING_GLASS + " " + commandName, githubPage, author.getAvatarUrl());
+		builder.setAuthor(commandName, githubPage, EmoteUtil.MAGNIFYING_GLASS_IMAGE);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -122,7 +122,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(150, 186, 255));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
@@ -137,7 +137,7 @@ public class MessageUtil {
 // --- Message Editors ---
 
 	public static void editActionMessage(Message message,
-					     String actionResult, String githubPage,
+					     String icon, String actionResult, String githubPage,
 					     User author,
 					     String actionDetails,
 					     String thumbnailUrl, String imageUrl,
@@ -146,7 +146,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(actionResult, githubPage, author.getAvatarUrl());
+		builder.setAuthor(actionResult, githubPage, icon);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -154,7 +154,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(255, 186, 212));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
@@ -176,7 +176,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(EmoteUtil.WARNING + " Error: " + errorName, githubPage, author.getAvatarUrl());
+		builder.setAuthor(errorName, githubPage, EmoteUtil.WARNING_IMAGE);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -184,7 +184,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(255, 67, 101));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
@@ -206,7 +206,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(EmoteUtil.OPEN_BOOK + " " + helpName, githubPage, author.getAvatarUrl());
+		builder.setAuthor(helpName, githubPage, EmoteUtil.OPEN_BOOK_IMAGE);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -215,7 +215,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(255, 226, 148));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
@@ -238,7 +238,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(EmoteUtil.MAGNIFYING_GLASS + " " + commandName, githubPage, author.getAvatarUrl());
+		builder.setAuthor(commandName, githubPage, EmoteUtil.MAGNIFYING_GLASS_IMAGE);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -247,7 +247,7 @@ public class MessageUtil {
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), null);
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(150, 186, 255));
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);

@@ -25,41 +25,59 @@ public class Database {
 
 		try {
 			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:" + (CGC.dataDirectory.equals("./") ? "cgc.db" : CGC.dataDirectory + "/cgc.db"));
+			connection = DriverManager.getConnection("jdbc:sqlite:" + (CGC.dataDirectory.equals("./") ? "database.db" : CGC.dataDirectory + "/database.db"));
 			Statement statement = connection.createStatement();
 
 			statement.setQueryTimeout(30);
-			statement.execute("PRAGMA foreign_keys = ON");
 
-			// Create the Ops table
+			// Create the ops table
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS " +
-				"Ops(" +
-					"id TEXT NOT NULL UNIQUE, " +
+				"ops(" +
+					"id INTEGER NOT NULL UNIQUE, " +
 					"PRIMARY KEY (id)" +
 				")");
 
-			// Create the Servers table
+			// Create the servers table
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS " +
-				"Servers(" +
-					"id TEXT NOT NULL UNIQUE, " +
+				"servers(" +
+					"id INTEGER NOT NULL UNIQUE, " +
 					"prefix TEXT NOT NULL, " +
 					"admins TEXT NOT NULL, " +
 					"PRIMARY KEY (id)" +
 				")");
 
-			// Create the Players table
+			// Create the users table
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS " +
-				"Players(" +
-					"id TEXT NOT NULL UNIQUE, " +
-					"money REAL DEFAULT 0, " +
-					"gems REAL DEFAULT 0, " +
-					"PRIMARY KEY (id)" +
+				"users(" +
+					"user_id INTEGER NOT NULL UNIQUE, " +
+					"PRIMARY KEY (user_id)" +
 				")");
 
-			// Ops Statements
-			preparedStatements.put(Permissions.ADD_OP, connection.prepareStatement("INSERT INTO Ops (id) VALUES (?)"));
-			preparedStatements.put(Permissions.GET_OPS, connection.prepareStatement("SELECT id FROM Ops"));
-			preparedStatements.put(Permissions.REMOVE_OP, connection.prepareStatement("DELETE FROM Ops WHERE id = ?"));
+			// Create the user_currency table
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS " +
+				"user_currency(" +
+					"user_id INTEGER NOT NULL UNIQUE, " +
+					"balance INTEGER DEFAULT 0, " +
+					"daily_streak INTEGER DEFAULT 0, " +
+					"last_daily_time TEXT DEFAULT NULL, " +
+					"PRIMARY KEY (user_id)" +
+				")");
+
+			// ops statements
+			preparedStatements.put(Permissions.ADD_OP, connection.prepareStatement("INSERT INTO ops (id) VALUES (?)"));
+			preparedStatements.put(Permissions.GET_OPS, connection.prepareStatement("SELECT * FROM ops"));
+			preparedStatements.put(Permissions.REMOVE_OP, connection.prepareStatement("DELETE FROM ops WHERE id = ?"));
+
+			// users statements
+			preparedStatements.put(DatabaseUserManager.ADD_USER, connection.prepareStatement("INSERT INTO users (user_id) VALUES (?)"));
+			preparedStatements.put(DatabaseUserManager.GET_USERS, connection.prepareStatement("SELECT * FROM users"));
+
+			// user_currency statements
+			preparedStatements.put(DatabaseUserManager.ADD_USER_CURRENCY, connection.prepareStatement("INSERT INTO user_currency (user_id) VALUES (?)"));
+			preparedStatements.put(DatabaseUserManager.GET_USER_CURRENCY, connection.prepareStatement("SELECT * FROM user_currency WHERE user_id = ?"));
+			preparedStatements.put(DatabaseUserManager.UPDATE_USER_CURRENCY_BALANCE, connection.prepareStatement("UPDATE user_currency SET balance = ? WHERE user_id = ?"));
+			preparedStatements.put(DatabaseUserManager.UPDATE_USER_CURRENCY_DAILY_STREAK, connection.prepareStatement("UPDATE user_currency SET daily_streak = ? WHERE user_id = ?"));
+			preparedStatements.put(DatabaseUserManager.UPDATE_USER_CURRENCY_LAST_DAILY_TIME, connection.prepareStatement("UPDATE user_currency SET last_daily_time = ? WHERE user_id = ?"));
 
 		} catch(SQLException e) {
 			e.printStackTrace();

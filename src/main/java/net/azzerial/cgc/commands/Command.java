@@ -4,7 +4,9 @@ import java.util.List;
 
 import net.azzerial.cgc.core.CGC;
 import net.azzerial.cgc.core.CGCInfo;
+import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.Permissions;
+import net.azzerial.cgc.database.entities.DatabaseUser;
 import net.azzerial.cgc.utils.MessageUtil;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
@@ -28,6 +30,8 @@ public abstract class Command extends ListenerAdapter {
 	public abstract boolean isAdminRequired();
 	public abstract boolean isOpRequired();
 
+	protected DatabaseUser databaseUser;
+
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
 		// Check if all the set up has ended before enabling commands usage.
@@ -48,10 +52,14 @@ public abstract class Command extends ListenerAdapter {
 		}
 		// Check if the command exists and run it.
 		if (containsCommand(event.getMessage())) {
+			if (!DatabaseUserManager.databaseContainsUser(event.getAuthor().getIdLong())) {
+				DatabaseUserManager.addUserToDatabase(event.getAuthor().getIdLong());
+			}
+			databaseUser = DatabaseUserManager.getDatabaseUser(event.getAuthor().getIdLong());
+
 			System.out.println("[" + getName() + "]: [" + event.getAuthor().getName() + "](" + event.getAuthor().getId() + ") executed the command.");
 			String output = onCommand(event, commandArgs(event.getMessage()), event.getTextChannel(), event.getAuthor(), event.getJDA().getSelfUser());
-			System.out.println("[" + getName() + "]" +
-			(output.startsWith("!") ? "(FAILURE): " + output.substring(1) : "(SUCCESS): " + output));
+			System.out.println("[" + getName() + "]" + (output.startsWith("!") ? "(FAILURE): " + output.substring(1) : "(SUCCESS): " + output));
 		}
 	}
 	

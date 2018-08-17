@@ -27,7 +27,7 @@ public class Permissions {
 		try {
 			ResultSet opsSet = Database.getInstance().getStatement(GET_OPS).executeQuery();
 			while (opsSet.next()) {
-				ops.add(opsSet.getString("id"));
+				ops.add(Long.toString(opsSet.getLong("id")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
