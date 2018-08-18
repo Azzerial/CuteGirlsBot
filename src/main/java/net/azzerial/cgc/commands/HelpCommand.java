@@ -35,9 +35,8 @@ public class HelpCommand extends Command {
 	public String onCommand(MessageReceivedEvent event, String[] args, MessageChannel channel, User author, User self) {
 		if (args.length > 2) {
 			MessageUtil.sendErrorMessage(channel,
-				"Wrong usage.", getGithubPage(), author,
-				"The provided amount of arguments is invalid.\n" +
-					"You can get some help for this command [here](" + getGithubPage() + ").",
+				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
+				"The provided amount of arguments is invalid.",
 				null, null, null);
 			return (INVALID_AMOUNT_OF_AGRUMENTS);
 		}
@@ -53,7 +52,7 @@ public class HelpCommand extends Command {
 			}
 
 			EmbedBuilder builder = new EmbedBuilder();
-			builder.setAuthor("Cute Girls Collection commands.", getGithubPage(), EmoteUtil.OPEN_BOOK_IMAGE);
+			builder.setTitle(EmoteUtil.OPEN_BOOK + " Cute Girls Collection commands.");
 			builder.setDescription(MiscUtil.listToString(list, ", "));
 			builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 			builder.setColor(new Color(255, 226, 148));
@@ -72,15 +71,15 @@ public class HelpCommand extends Command {
 
 			if (cmd.getAliases().contains(command) || cmd.getName().equalsIgnoreCase(command)) {
 				// Send help for that page.
-				MessageUtil.sendHelpMessage(channel, cmd.getName() + " command.", cmd.getGithubPage(), author,
-					cmd.getHelpDescription(),
-					cmd.getHelpUsage(),
+				MessageUtil.sendHelpMessage(channel,
+					cmd.getName() + " command.", cmd.getGithubPage(), author,
+					cmd.getHelpDescription(), cmd.getHelpUsage(),
 					null, null, null);
 				return ("Sent the help page for the " + cmd.getName() + " command.");
 			}
 		}
 		MessageUtil.sendErrorMessage(channel,
-			"Command not found.", getGithubPage(), author,
+			MessageUtil.ErrorType.ERROR, "Command not found.", getGithubPage(), author,
 			"There are no command named `" + command + "`.",
 			null, null, null);
 		return ("!Command not found");

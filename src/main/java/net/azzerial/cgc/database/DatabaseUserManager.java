@@ -31,7 +31,7 @@ public class DatabaseUserManager {
 		try {
 			ResultSet usersIds = Database.getInstance().getStatement(GET_USERS).executeQuery();
 			while (usersIds.next()) {
-				long id = usersIds.getLong(DatabaseUser.Column.ID.getColumn());
+				long id = usersIds.getLong(DatabaseUser.Column.ID.asString());
 
 				// Query user_currency for the current user id.
 				PreparedStatement statementUserCurrency = Database.getInstance().getStatement(GET_USER_CURRENCY);
@@ -39,9 +39,9 @@ public class DatabaseUserManager {
 				ResultSet userCurrency = statementUserCurrency.executeQuery();
 
 				// Get user_currency values.
-				long balance = userCurrency.getLong(DatabaseUser.Column.BALANCE.getColumn());
-				int daily_streak = userCurrency.getInt(DatabaseUser.Column.DAILY_STREAK.getColumn());
-				GregorianCalendar lastDailyTime = MiscUtil.stringToGregorianCalendar(userCurrency.getString(DatabaseUser.Column.LAST_DAILY_TIME.getColumn()));
+				long balance = userCurrency.getLong(DatabaseUser.Column.BALANCE.asString());
+				int daily_streak = userCurrency.getInt(DatabaseUser.Column.DAILY_STREAK.asString());
+				GregorianCalendar lastDailyTime = MiscUtil.stringToGregorianCalendar(userCurrency.getString(DatabaseUser.Column.LAST_DAILY_TIME.asString()));
 
 				DatabaseUser user = new DatabaseUser(id, balance, daily_streak, lastDailyTime);
 				users.add(user);

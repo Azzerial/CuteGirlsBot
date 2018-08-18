@@ -1,6 +1,8 @@
 package net.azzerial.cgc.commands;
 
 import net.azzerial.cgc.database.DatabaseUserManager;
+import net.azzerial.cgc.utils.EmoteUtil;
+import net.azzerial.cgc.utils.MessageUtil;
 import net.azzerial.imcg.core.IdolList;
 import net.azzerial.imcg.entities.Idol;
 import net.dv8tion.jda.core.EmbedBuilder;

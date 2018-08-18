@@ -80,7 +80,7 @@ public abstract class Command extends ListenerAdapter {
 	
 	private void sendMissingPermissionMessage(MessageChannel channel, User author, boolean opCase) {
 		MessageUtil.sendErrorMessage(channel,
-			"Missing permission.", getGithubPage(), author,
+			MessageUtil.ErrorType.PROHIBITED, "Missing permission.", getGithubPage(), author,
 			(opCase ? Permissions.OP_REQUIRED_MESSAGE : Permissions.ADMIN_REQUIRED_MESSAGE),
 			null, null, null);
 	}

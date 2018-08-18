@@ -12,7 +12,7 @@ public class MessageUtil {
 // --- Message Senders ---
 
 	public static void sendActionMessage(MessageChannel channel,
-					     String icon, String actionResult, String githubPage,
+					     String emote, String actionResult,
 					     User author,
 					     String actionDetails,
 					     String thumbnailUrl, String imageUrl,
@@ -21,7 +21,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(actionResult, githubPage, icon);
+		builder.setTitle(emote + " " + actionResult);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -42,7 +42,7 @@ public class MessageUtil {
 	}
 
 	public static void sendErrorMessage(MessageChannel channel,
-					    String errorName, String githubPage,
+					    ErrorType errorType, String errorName, String githubPage,
 					    User author,
 					    String errorDetails,
 					    String thumbnailUrl, String imageUrl,
@@ -51,11 +51,12 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(errorName, githubPage, EmoteUtil.WARNING_IMAGE);
+		String emote = (errorType.getValue() == 0 ? EmoteUtil.WARNING : EmoteUtil.PROHIBITED);
+		builder.setTitle(emote + " " + errorName);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
-		builder.setDescription(errorDetails);
+		builder.setDescription(errorDetails + "\n\nIf needed, you can get some help [here](" + githubPage + ").");
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
@@ -81,7 +82,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(helpName, githubPage, EmoteUtil.OPEN_BOOK_IMAGE);
+		builder.setTitle(EmoteUtil.OPEN_BOOK + " " + helpName);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -113,7 +114,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(commandName, githubPage, EmoteUtil.MAGNIFYING_GLASS_IMAGE);
+		builder.setAuthor(commandName, githubPage);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -137,7 +138,7 @@ public class MessageUtil {
 // --- Message Editors ---
 
 	public static void editActionMessage(Message message,
-					     String icon, String actionResult, String githubPage,
+					     String emote, String actionResult,
 					     User author,
 					     String actionDetails,
 					     String thumbnailUrl, String imageUrl,
@@ -146,7 +147,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(actionResult, githubPage, icon);
+		builder.setTitle(emote + " " + actionResult);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -167,7 +168,7 @@ public class MessageUtil {
 	}
 
 	public static void editErrorMessage(Message message,
-					    String errorName, String githubPage,
+					    ErrorType errorType, String errorName, String githubPage,
 					    User author,
 					    String errorDetails,
 					    String thumbnailUrl, String imageUrl,
@@ -176,11 +177,12 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(errorName, githubPage, EmoteUtil.WARNING_IMAGE);
+		String emote = (errorType.getValue() == 0 ? EmoteUtil.WARNING : EmoteUtil.PROHIBITED);
+		builder.setTitle(emote + " " + errorName);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
-		builder.setDescription(errorDetails);
+		builder.setDescription(errorDetails + "\n\nIf needed, you can get some help [here](" + githubPage + ").");
 		if (imageUrl != null && !imageUrl.isEmpty()) {
 			builder.setImage(imageUrl);
 		}
@@ -206,7 +208,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(helpName, githubPage, EmoteUtil.OPEN_BOOK_IMAGE);
+		builder.setTitle(EmoteUtil.OPEN_BOOK + " " + helpName);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -238,7 +240,7 @@ public class MessageUtil {
 			throw new NullPointerException("The message's author is null");
 		}
 		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(commandName, githubPage, EmoteUtil.MAGNIFYING_GLASS_IMAGE);
+		builder.setAuthor(commandName, githubPage);
 		if (thumbnailUrl != null && !thumbnailUrl.isEmpty()) {
 			builder.setThumbnail(thumbnailUrl);
 		}
@@ -256,6 +258,23 @@ public class MessageUtil {
 			message.editMessage(msg).queue(restAction);
 		} else {
 			message.editMessage(msg).queue();
+		}
+	}
+
+// --- Utilities ---
+
+	public enum ErrorType {
+		ERROR(0),
+		PROHIBITED(1);
+
+		private int errorType;
+
+		ErrorType(int errorType) {
+			this.errorType = errorType;
+		}
+
+		public int getValue() {
+			return (errorType);
 		}
 	}
 

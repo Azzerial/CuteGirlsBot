@@ -42,8 +42,9 @@ public class DailyCommand extends Command {
 					.append(minutes).append(" minute" + (minutes > 1 ? "s" : "") + " and ")
 					.append(seconds).append(" second" + (seconds > 1 ? "s" : "")).toString();
 
-				MessageUtil.sendErrorMessage(channel, "Daily pay already claimed.", getGithubPage(), author,
-					"You already claimed your daily today! Please wait another `" + time + "` before using it again.",
+				MessageUtil.sendErrorMessage(channel,
+					MessageUtil.ErrorType.ERROR,"Daily reward already claimed.", getGithubPage(), author,
+					"You already claimed your daily reward today! Please wait another `" + time + "` before using it again.",
 					null, null, null);
 				return ("!Daily pay already claimed.");
 			}
@@ -55,7 +56,6 @@ public class DailyCommand extends Command {
 
 		int currentStreak = databaseUser.getDailyStreak(); // User's current bonus streak.
 		long currentBalance = databaseUser.getBalance(); // User's current balance.
-
 		// View if the streak has been broken or not.
 		GregorianCalendar streakResetTime = (GregorianCalendar) lastDailyTime.clone();
 		streakResetTime.add(Calendar.HOUR, 48);
@@ -75,10 +75,11 @@ public class DailyCommand extends Command {
 		}
 		DatabaseUserManager.updateUserLastDailyTime(author.getIdLong(), now);
 
-		MessageUtil.sendActionMessage(channel, EmoteUtil.PURSE_IMAGE, "Daily pay earned.", getGithubPage(), author,
+		MessageUtil.sendActionMessage(channel,
+			EmoteUtil.PURSE, "Daily reward earned.", author,
 			"¥`" + dailyPay + "` have been added to your wallet. Updated balance: ¥`" + balance + "`",
 			null, null, null);
-		return ("Earned daily pay.");
+		return ("Earned daily reward.");
 	}
 
 	@Override
@@ -95,17 +96,17 @@ public class DailyCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return (null);
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/daily-reward");
 	}
 
 	@Override
 	public String getHelpDescription() {
-		return ("");
+		return ("Gives you a daily reward of ¥`100` with a bonus of ¥`50` per consecutive day.");
 	}
 
 	@Override
 	public String getHelpUsage() {
-		return ("");
+		return ("```md\n/daily\n```");
 	}
 
 	@Override

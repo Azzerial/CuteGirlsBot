@@ -14,7 +14,8 @@ public class ShutdownCommand extends Command {
 
 	@Override
 	public String onCommand(MessageReceivedEvent event, String[] args, MessageChannel channel, User author, User self) {
-		MessageUtil.sendActionMessage(channel, EmoteUtil.RIBBON_IMAGE, "Shutting down Cute Girls Collection", getGithubPage(), author,
+		MessageUtil.sendActionMessage(channel,
+			EmoteUtil.RIBBON, "Shutting down Cute Girls Collection", author,
 			"じゃね〜",
 			null,null,null);
 		System.out.println("[Command/ShutdownCommand]: じゃね〜");
