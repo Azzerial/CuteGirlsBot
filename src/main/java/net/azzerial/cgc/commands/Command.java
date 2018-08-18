@@ -17,7 +17,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public abstract class Command extends ListenerAdapter {
 
-	protected String INVALID_AMOUNT_OF_AGRUMENTS = "!Invalid amount of arguments.";
+	protected String INVALID_AMOUNT_OF_ARGUMENTS = "!Invalid amount of arguments.";
 	protected String DATABASE_ERROR = "!Something unexpected happened when modifying the database.";
 	protected String UNKNOWN_CASE = "!Unknown return case.";
 

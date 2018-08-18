@@ -8,6 +8,7 @@ public class EmoteUtil {
 	public static final String PROHIBITED = "\uD83D\uDEAB";
 	public static final String PURSE = "\uD83D\uDC5B";
 	public static final String RIBBON = "\uD83C\uDF80";
+	public static final String SLOT_MACHINE = "\uD83C\uDFB0";
 	public static final String WARNING = "⚠️";
 
 }

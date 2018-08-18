@@ -38,7 +38,7 @@ public class HelpCommand extends Command {
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
 				null, null, null);
-			return (INVALID_AMOUNT_OF_AGRUMENTS);
+			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 		Object[] keys = commands.keySet().toArray();
 

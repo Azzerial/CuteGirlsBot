@@ -7,10 +7,8 @@ import java.net.URLDecoder;
 
 import javax.security.auth.login.LoginException;
 
-import net.azzerial.cgc.commands.DailyCommand;
-import net.azzerial.cgc.commands.HelpCommand;
-import net.azzerial.cgc.commands.ShutdownCommand;
-import net.azzerial.cgc.commands.TestCommand;
+import net.azzerial.cgc.commands.*;
+import net.azzerial.cgc.commands.Currency.*;
 import net.azzerial.cgc.database.Database;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.Permissions;
@@ -20,7 +18,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 
 public class CGC {
-	
+
 	// Non error exit codes.
 	public static final int NORMAL_SHUTDOWN = 0;
 	public static final int NEWLY_CREATED_FILE = 1;
@@ -89,6 +87,7 @@ public class CGC {
 			jda_builder.addEventListener(command.registerCommand(command));
 			jda_builder.addEventListener(command.registerCommand(new DailyCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShutdownCommand()));
+	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new SlotsCommand()));
 			jda_builder.addEventListener(command.registerCommand(new TestCommand()));
 			
 			// Login to Discord.

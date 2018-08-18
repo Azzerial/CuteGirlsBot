@@ -3,12 +3,7 @@ package net.azzerial.cgc.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.GregorianCalendar;
-import java.util.Date;
+import java.util.*;
 
 public class MiscUtil {
 
@@ -61,6 +56,10 @@ public class MiscUtil {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 		return (dateFormat.format(gregorianCalendar.getTime()));
+	}
+
+	public static int getRandomNumber(int origin, int maximumBound) {
+		return (origin + (int)(Math.random() * ((maximumBound - origin))));
 	}
 
 }

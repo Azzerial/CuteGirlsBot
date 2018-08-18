@@ -1,5 +1,6 @@
-package net.azzerial.cgc.commands;
+package net.azzerial.cgc.commands.Currency;
 
+import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
@@ -76,7 +77,7 @@ public class DailyCommand extends Command {
 		DatabaseUserManager.updateUserLastDailyTime(author.getIdLong(), now);
 
 		MessageUtil.sendActionMessage(channel,
-			EmoteUtil.PURSE, "Daily reward earned.", author,
+			EmoteUtil.PURSE, "Daily reward", author,
 			"¥`" + dailyPay + "` have been added to your wallet. Updated balance: ¥`" + balance + "`",
 			null, null, null);
 		return ("Earned daily reward.");
