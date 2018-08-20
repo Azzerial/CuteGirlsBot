@@ -83,13 +83,24 @@ public class CGC {
 			jda_builder.setStatus(settings.getStatus());
 			
 			// Register the commands.
-			HelpCommand command = new HelpCommand();
+	/*TO REWORK*/	HelpCommand command = new HelpCommand();
 			jda_builder.addEventListener(command.registerCommand(command));
+	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new BalanceCommand()));
 			jda_builder.addEventListener(command.registerCommand(new DailyCommand()));
+	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new GiveCommand()));
+	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new PayCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShutdownCommand()));
 	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new SlotsCommand()));
 			jda_builder.addEventListener(command.registerCommand(new TestCommand()));
-			
+			/* Commands to be added:
+			 *
+			 * club
+			 * shop
+			 * idol
+			 * give
+			 * reset
+			 */
+
 			// Login to Discord.
 			api = jda_builder.buildBlocking();
 

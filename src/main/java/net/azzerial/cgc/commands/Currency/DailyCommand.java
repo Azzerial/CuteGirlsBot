@@ -19,6 +19,14 @@ public class DailyCommand extends Command {
 
 	@Override
 	public String onCommand(MessageReceivedEvent event, String[] args, MessageChannel channel, User author, User self) {
+		if (args.length != 1) {
+			MessageUtil.sendErrorMessage(channel,
+				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
+				"The provided amount of arguments is invalid.",
+				null, null, null);
+			return (INVALID_AMOUNT_OF_ARGUMENTS);
+		}
+
 		GregorianCalendar lastDailyTime = databaseUser.getLastDailyTime(); // User's last daily pay date.
 		GregorianCalendar now = new GregorianCalendar();
 
@@ -58,10 +66,12 @@ public class DailyCommand extends Command {
 		int currentStreak = databaseUser.getDailyStreak(); // User's current bonus streak.
 		long currentBalance = databaseUser.getBalance(); // User's current balance.
 		// View if the streak has been broken or not.
-		GregorianCalendar streakResetTime = (GregorianCalendar) lastDailyTime.clone();
-		streakResetTime.add(Calendar.HOUR, 48);
-		if (streakResetTime.compareTo(now) < 0) {
-			currentStreak = 0;
+		if (lastDailyTime != null) {
+			GregorianCalendar streakResetTime = (GregorianCalendar) lastDailyTime.clone();
+			streakResetTime.add(Calendar.HOUR, 48);
+			if (streakResetTime.compareTo(now) < 0) {
+				currentStreak = 0;
+			}
 		}
 
 		// Calculate new values.

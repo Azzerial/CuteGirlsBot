@@ -14,12 +14,14 @@ public class IdolList {
 		List<Idol> idols = new ArrayList<Idol>();
 
 		// Abe Nana
-		idols.add(new Idol(0,"Abe Nana", "安部菜々", Idol.IdolType.CUTE,
+		idols.add(new Idol(
+			0,"Abe Nana", "安部菜々", Idol.IdolType.CUTE,
 			17, new Idol.Birthday(15, 5),
 			146, 40, new Idol.Measurement(84, 57, 84),
 			Idol.BloodType.O, Idol.Handedness.RIGHT,
-			"https://www.project-imas.com/w/images/8/83/Nana_SS.png")
-		);
+			"https://www.project-imas.com/w/images/8/83/Nana_SS.png"
+		));
+
 		this.idols = idols;
 	}
 
@@ -46,4 +48,5 @@ public class IdolList {
 		}
 		return (null);
 	}
+
 }

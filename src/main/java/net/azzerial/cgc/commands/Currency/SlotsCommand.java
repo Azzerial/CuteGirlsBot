@@ -37,9 +37,27 @@ public class SlotsCommand extends Command {
 		CHERRY,	CHERRY, CHERRY, CHERRY
 	};
 
+	private final String JAPANESE_CONGRATULATIONS = "\u3297\uFE0F";
+	private final String WHITE_FLOWER = "\uD83D\uDCAE";
+	private final String MONEY_MOUTH = "\uD83E\uDD11";
+	private final String PARTY_POPPER = "\uD83C\uDF89";
+	private final String CONFETTI_BALL = "\uD83C\uDF8A";
+
+	private String[] winningEmotes = {
+		JAPANESE_CONGRATULATIONS,
+		WHITE_FLOWER,
+		MONEY_MOUTH,
+		PARTY_POPPER,
+		CONFETTI_BALL
+	};
+
 	@Override
 	public String onCommand(MessageReceivedEvent event, String[] args, MessageChannel channel, User author, User self) {
 		if (args.length != 2) {
+			MessageUtil.sendErrorMessage(channel,
+				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
+				"The provided amount of arguments is invalid.",
+				null, null, null);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 
@@ -51,10 +69,17 @@ public class SlotsCommand extends Command {
 		if (args[1].equalsIgnoreCase("all")) {
 			allIn = true;
 			bet = currentBalance;
+			if (bet == 0) {
+				MessageUtil.sendErrorMessage(channel,
+					MessageUtil.ErrorType.ERROR, "Empty wallet.", getGithubPage(), author,
+					"You can't bet all of your money as your wallet is empty.",
+					null, null, null);
+				return ("!Empty wallet.");
+			}
 		} else {
 			allIn = false;
 			if (args[1].matches("[0-9]+")) {
-				if (args[1].length() > 6) {
+				if (args[1].length() > 9) {
 					MessageUtil.sendErrorMessage(channel,
 						MessageUtil.ErrorType.ERROR, "Betting value is too big.", getGithubPage(), author,
 						"You can't bet that much money.",
@@ -159,6 +184,7 @@ public class SlotsCommand extends Command {
 			}
 		}
 
+		long balance = 0;
 		String resultDescription;
 		if (noBet) {
 			// No bet.
@@ -168,26 +194,27 @@ public class SlotsCommand extends Command {
 				resultDescription = "\n\nIt was a win.";
 			}
 		} else {
-			// Update in database the values.
-			long balance = currentBalance + money;
-			DatabaseUserManager.updateUserBalance(author.getIdLong(), balance);
-
 			if (money == 0) {
 				// Player lost his bet.
+				resultDescription = "You lost!\n\n¥`" + bet + "` were lost.";
 				money = -bet;
-				resultDescription = "You lost!\n\n¥`" + money + "` were lost. Updated balance: ¥`" + balance + "`";
 			} else {
 				// Player won some money.
-				resultDescription = "You won!\n\n¥`" + money + "` have been added to your wallet. Updated balance: ¥`" + balance + "`";
+				String emote = winningEmotes[MiscUtil.getRandomNumber(0, winningEmotes.length)];
+				resultDescription = "You won! " + emote + "\n\n¥`" + money + "` have been added to your wallet.";
 			}
+
+			// Update in database the values.
+			balance = currentBalance + money;
+			DatabaseUserManager.updateUserBalance(author.getIdLong(), balance);
 		}
 
 		MessageUtil.sendActionMessage(channel,
 			EmoteUtil.SLOT_MACHINE, "Slots result", author,
 			"[ " + slots[0] + slots[1] + slots[2] + " ] " +
-				resultDescription,
+				resultDescription + (noBet ? "" : " Updated balance: ¥`" + balance + "`"),
 			null, null, null);
-		return ("Done.");
+		return ("Slots game displayed.");
 	}
 
 	@Override
