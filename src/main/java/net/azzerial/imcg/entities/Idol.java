@@ -1,24 +1,27 @@
 package net.azzerial.imcg.entities;
 
+import java.util.List;
+
 public class Idol {
 
-	private int id;
-	private String latinName;
-	private String kanjiName;
-	private IdolType idolType;
-	private int age;
-	private Birthday birthday;
-	private int height;
-	private int weight;
-	private Measurement measurements;
-	private BloodType bloodType;
-	private Handedness handedness;
-	private String profilePicture;
+	private final int id;
+	private final String latinName;
+	private final String japaneseName;
+	private final IdolType idolType;
+	private final int age;
+	private final Birthday birthday;
+	private final int height;
+	private final int weight;
+	private final Measurement measurements;
+	private final BloodType bloodType;
+	private final Handedness handedness;
+	private final String profilePicture;
+	private final List<IdolSkin> skins;
 
-	public Idol(int id, String latinName, String kanjiName, IdolType idolType, int age, Birthday birthday, int height, int weight, Measurement measurements, BloodType bloodType, Handedness handedness, String profilePicture) {
+	public Idol(int id, String latinName, String japaneseName, IdolType idolType, int age, Birthday birthday, int height, int weight, Measurement measurements, BloodType bloodType, Handedness handedness, String profilePicture, List<IdolSkin> skins) {
 		this.id = id;
 		this.latinName = latinName;
-		this.kanjiName = kanjiName;
+		this.japaneseName = japaneseName;
 		this.idolType = idolType;
 		this.age = age;
 		this.birthday = birthday;
@@ -28,6 +31,7 @@ public class Idol {
 		this.bloodType = bloodType;
 		this.handedness = handedness;
 		this.profilePicture = profilePicture;
+		this.skins = skins;
 	}
 
 	public int getId() {
@@ -38,8 +42,8 @@ public class Idol {
 		return (latinName);
 	}
 
-	public String getKanjiName() {
-		return (kanjiName);
+	public String getJapaneseName() {
+		return (japaneseName);
 	}
 
 	public IdolType getIdolType() {
@@ -76,6 +80,17 @@ public class Idol {
 
 	public String getProfilePicture() {
 		return (profilePicture);
+	}
+
+	public List<IdolSkin> getSkins() {
+		return (skins);
+	}
+
+	public IdolSkin getSkin(int id) {
+		if (id < 0 || id >= skins.size() || skins.isEmpty()) {
+			return (null);
+		}
+		return (skins.get(id));
 	}
 
 	public enum IdolType {

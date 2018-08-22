@@ -1,40 +1,35 @@
 package net.azzerial.imcg.core;
 
 import net.azzerial.imcg.entities.Idol;
+import net.azzerial.imcg.idols.AbeNana;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class IdolList {
+public class IdolsList {
 
-	private static IdolList instance;
+	private static IdolsList instance;
 	private static List<Idol> idols;
 
-	public IdolList() {
+	public IdolsList() {
 		List<Idol> idols = new ArrayList<Idol>();
 
 		// Abe Nana
-		idols.add(new Idol(
-			0,"Abe Nana", "安部菜々", Idol.IdolType.CUTE,
-			17, new Idol.Birthday(15, 5),
-			146, 40, new Idol.Measurement(84, 57, 84),
-			Idol.BloodType.O, Idol.Handedness.RIGHT,
-			"https://www.project-imas.com/w/images/8/83/Nana_SS.png"
-		));
+		idols.add(new AbeNana().getIdol());
 
 		this.idols = idols;
 	}
 
-	public static IdolList loadIdols() {
+	public static IdolsList loadIdols() {
 		if (instance == null) {
-			instance = new IdolList();
+			instance = new IdolsList();
 			System.out.println("[IMCG/IdolList]: Loaded Idols.");
 		}
 		return (instance);
 	}
 
 	public static Idol getIdol(int id) {
-		if (id < 0 || id > idols.size() - 1) {
+		if (id < 0 || id >= idols.size() || idols.isEmpty()) {
 			return (null);
 		}
 		return (idols.get(id));
@@ -47,6 +42,10 @@ public class IdolList {
 			}
 		}
 		return (null);
+	}
+
+	public static List<Idol> getIdols() {
+		return (idols);
 	}
 
 }

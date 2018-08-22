@@ -12,7 +12,7 @@ import net.azzerial.cgc.commands.Currency.*;
 import net.azzerial.cgc.database.Database;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.Permissions;
-import net.azzerial.imcg.core.IdolList;
+import net.azzerial.imcg.core.IdolsList;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -68,7 +68,7 @@ public class CGC {
 			DatabaseUserManager.loadUsers();
 
 			// Load the idols list.
-			IdolList.loadIdols();
+			IdolsList.loadIdols();
 
 			// Set the Ops list.
 			Permissions.setupPermissions();
@@ -88,6 +88,7 @@ public class CGC {
 	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new BalanceCommand()));
 			jda_builder.addEventListener(command.registerCommand(new DailyCommand()));
 	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new GiveCommand()));
+	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new OpCommand()));
 	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new PayCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShutdownCommand()));
 	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new SlotsCommand()));
