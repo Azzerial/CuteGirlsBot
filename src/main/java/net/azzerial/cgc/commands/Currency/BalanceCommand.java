@@ -41,9 +41,6 @@ public class BalanceCommand extends Command {
 		}
 
 		User user = mentionedUsers.get(0);
-		if (!DatabaseUserManager.databaseContainsUser(user.getIdLong())) {
-			DatabaseUserManager.addUserToDatabase(user.getIdLong());
-		}
 		long balance = DatabaseUserManager.getDatabaseUser(user.getIdLong()).getBalance();
 
 		MessageUtil.sendActionMessage(channel,

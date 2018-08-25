@@ -1,15 +1,19 @@
 package net.azzerial.cgc.database;
 
 import net.azzerial.cgc.database.entities.DatabaseUser;
+import net.azzerial.cgc.entities.Rank;
+import net.azzerial.cgc.entities.RankingType;
 import net.azzerial.cgc.utils.MiscUtil;
+import net.azzerial.imcg.core.IdolsList;
+import net.azzerial.imcg.entities.Idol;
+import net.azzerial.imcg.entities.IdolCollection;
+import net.azzerial.imcg.entities.utils.SkinData;
+import net.azzerial.imcg.idols.core.CuteGirl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.chrono.MinguoChronology;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 public class DatabaseUserManager {
 
@@ -26,6 +30,7 @@ public class DatabaseUserManager {
 
 	public DatabaseUserManager() {
 		List<DatabaseUser> users = new ArrayList<DatabaseUser>();
+		List<Idol> idols = IdolsList.getIdols();
 
 		// Load users data from database
 		try {
@@ -36,14 +41,39 @@ public class DatabaseUserManager {
 				// Query user_currency for the current user id.
 				PreparedStatement statementUserCurrency = Database.getInstance().getStatement(GET_USER_CURRENCY);
 				statementUserCurrency.setLong(1, id);
-				ResultSet userCurrency = statementUserCurrency.executeQuery();
+				ResultSet userCurrencyResultSet = statementUserCurrency.executeQuery();
 
 				// Get user_currency values.
-				long balance = userCurrency.getLong(DatabaseUser.Column.BALANCE.asString());
-				int daily_streak = userCurrency.getInt(DatabaseUser.Column.DAILY_STREAK.asString());
-				GregorianCalendar lastDailyTime = MiscUtil.stringToGregorianCalendar(userCurrency.getString(DatabaseUser.Column.LAST_DAILY_TIME.asString()));
+				long balance = userCurrencyResultSet.getLong(DatabaseUser.Column.BALANCE.asString());
+				int daily_streak = userCurrencyResultSet.getInt(DatabaseUser.Column.DAILY_STREAK.asString());
+				GregorianCalendar lastDailyTime = MiscUtil.stringToGregorianCalendar(userCurrencyResultSet.getString(DatabaseUser.Column.LAST_DAILY_TIME.asString()));
 
-				DatabaseUser user = new DatabaseUser(id, balance, daily_streak, lastDailyTime);
+				// Query user_idol_collection for the current user id.
+				PreparedStatement statementUserIdolCollection = Database.getInstance().getStatement(CuteGirl.GET_USER_IDOL_COLLECTION);
+				statementUserIdolCollection.setLong(1, id);
+				ResultSet userIdolCollectionResultSet = statementUserIdolCollection.executeQuery();
+
+				// Get user_idol_collection values.
+				IdolCollection.Builder idolCollectionBuilder = new IdolCollection.Builder();
+				for (int i = 0; i < idols.size(); i += 1) {
+					Idol idol = idols.get(i);
+					IdolCollection.Collection.Builder collectionBuilder = new IdolCollection.Collection.Builder();
+					String[] skins = userIdolCollectionResultSet.getString(idol.getDatabaseName()).split(",");
+
+					collectionBuilder.setIdolId(idol.getId());
+					for (int n = 0; n < skins.length; n += 1) {
+						String[] s1 = skins[n].split(":");
+						int skinId = Integer.parseInt(s1[0]);
+						String[] s2 = s1[1].split("-");
+						int basicSkinCount = Integer.parseInt(s2[0]);
+						int evolvedSkinCount = Integer.parseInt(s2[1]);
+
+						collectionBuilder.addSkin(skinId, new SkinData(basicSkinCount, evolvedSkinCount));
+					}
+					idolCollectionBuilder.addIdol(idol.getId(), collectionBuilder.build());
+				}
+
+				DatabaseUser user = new DatabaseUser(id, balance, daily_streak, lastDailyTime, idolCollectionBuilder.build());
 				users.add(user);
 			}
 		} catch (SQLException e) {
@@ -63,14 +93,12 @@ public class DatabaseUserManager {
 	// --- Database ---
 
 	public static DatabaseUser addUserToDatabaseAndReturn(long id) {
-		if (addUserToDatabase(id)) {
-			return (getDatabaseUser(id));
-		}
-		return (null);
+		addUserToDatabase(id);
+		return (getDatabaseUser(id));
 	}
 
 	public static boolean addUserToDatabase(long id) {
-		if (databaseContainsUser(id)) {
+		if (isUserInDatabase(id)) {
 			return (false);
 		}
 
@@ -92,7 +120,7 @@ public class DatabaseUserManager {
 	}
 
 	public static boolean updateUserBalance(long id, long newBalance) {
-		if (!databaseContainsUser(id)) {
+		if (!isUserInDatabase(id)) {
 			return (false);
 		}
 		DatabaseUser user = getDatabaseUser(id);
@@ -107,7 +135,8 @@ public class DatabaseUserManager {
 						user.getId(),
 						newBalance,
 						user.getDailyStreak(),
-						user.getLastDailyTime()
+						user.getLastDailyTime(),
+						user.getIdolCollection()
 					)
 				));
 			}
@@ -118,7 +147,7 @@ public class DatabaseUserManager {
 	}
 
 	public static boolean updateUserDailyStreak(long id, int newDailyStreak) {
-		if (!databaseContainsUser(id)) {
+		if (!isUserInDatabase(id)) {
 			return (false);
 		}
 		DatabaseUser user = getDatabaseUser(id);
@@ -133,7 +162,8 @@ public class DatabaseUserManager {
 						user.getId(),
 						user.getBalance(),
 						newDailyStreak,
-						user.getLastDailyTime()
+						user.getLastDailyTime(),
+						user.getIdolCollection()
 					)
 				));
 			}
@@ -144,7 +174,7 @@ public class DatabaseUserManager {
 	}
 
 	public static boolean updateUserLastDailyTime(long id, GregorianCalendar newLastDailyTime) {
-		if (!databaseContainsUser(id)) {
+		if (!isUserInDatabase(id)) {
 			return (false);
 		}
 		DatabaseUser user = getDatabaseUser(id);
@@ -159,7 +189,8 @@ public class DatabaseUserManager {
 						user.getId(),
 						user.getBalance(),
 						user.getDailyStreak(),
-						newLastDailyTime
+						newLastDailyTime,
+						user.getIdolCollection()
 					)
 				));
 			}
@@ -169,9 +200,13 @@ public class DatabaseUserManager {
 		return (false);
 	}
 
+	public static boolean updateUserIdolCollection(long userId, String columnName, String value) {
+		return (Database.getInstance().updateIdolCollectionInDatabase(userId, columnName, value));
+	}
+
 	// --- Class ---
 
-	public static boolean databaseContainsUser(long id) {
+	public static boolean isUserInDatabase(long id) {
 		for (int i = 0; i < usersCache.size(); i += 1) {
 			if (usersCache.get(i).getId() == id) {
 				return (true);
@@ -186,13 +221,56 @@ public class DatabaseUserManager {
 				return (usersCache.get(i));
 			}
 		}
+		if (!isUserInDatabase(id)) {
+			return (addUserToDatabaseAndReturn(id));
+		}
 		return (null);
+	}
+
+	public static Rank getUserRank(DatabaseUser user, RankingType rankingType) {
+		List<DatabaseUser> orderedUsers = new ArrayList<DatabaseUser>(usersCache);
+
+		// Order the users based on their IdolCollection's progress value.
+		switch (rankingType) {
+			case IDOL_COLLECTION:
+				Collections.sort(orderedUsers, new MiscUtil.sortDatabaseUserByIdolCollectionProgress());
+				break;
+			case BALANCE:
+				Collections.sort(orderedUsers, new MiscUtil.sortDatabaseUserByBalance());
+				break;
+		}
+		// Note: They are ordered from the HIGHEST to the LOWEST value.
+
+		// Getting the correct rank value following the standard competition ranking:
+		// 	https://en.wikipedia.org/wiki/Ranking#Standard_competition_ranking_(%221224%22_ranking)
+		int lastProgressValue = 0;
+		int rank = 0;
+		for (int i = 0; i < orderedUsers.size(); i += 1) {
+			DatabaseUser u = orderedUsers.get(i);
+
+			switch (rankingType) {
+				case IDOL_COLLECTION:
+					if (lastProgressValue != u.getIdolCollection().getCollectionsProgress().getProgress()) {
+						rank = i;
+					}
+					break;
+				case BALANCE:
+					if (lastProgressValue != Math.toIntExact(u.getBalance())) {
+						rank = i;
+					}
+					break;
+			}
+			if (user.equals(u)) {
+				break;
+			}
+		}
+		return (new Rank(rank + 1, orderedUsers.size()));
 	}
 
 	// --- Utility ---
 
 	private static DatabaseUser createDefaultUser(long id) {
-		return (new DatabaseUser(id, 0, 0, null));
+		return (new DatabaseUser(id, 0, 0, null, IdolCollection.createNewEmptyCollection()));
 	}
 
 	private static boolean overrideCachedDatabaseUser(DatabaseUser newDatabaseUser) {

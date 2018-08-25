@@ -33,9 +33,6 @@ public class PayCommand extends Command {
 		}
 
 		User user = mentionedUsers.get(0);
-		if (!DatabaseUserManager.databaseContainsUser(user.getIdLong())) {
-			DatabaseUserManager.addUserToDatabase(user.getIdLong());
-		}
 		long mentionedUserBalance = DatabaseUserManager.getDatabaseUser(user.getIdLong()).getBalance();
 
 		long amount;

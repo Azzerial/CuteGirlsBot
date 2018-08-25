@@ -33,10 +33,6 @@ public class GiveCommand extends Command {
 		}
 
 		User user = mentionedUsers.get(0);
-		if (!DatabaseUserManager.databaseContainsUser(user.getIdLong())) {
-			DatabaseUserManager.addUserToDatabase(user.getIdLong());
-		}
-
 		switch (args[1]) {
 			case "money":
 				return (giveMoney(channel, author, user, args[3]));

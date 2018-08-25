@@ -65,10 +65,8 @@ public class CGC {
 
 			// Cache database.
 			Database.getInstance();
-			DatabaseUserManager.loadUsers();
-
-			// Load the idols list.
-			IdolsList.loadIdols();
+			IdolsList.loadIdols();			// Load the idols list.
+			DatabaseUserManager.loadUsers();	// Load the users.
 
 			// Set the Ops list.
 			Permissions.setupPermissions();

@@ -52,9 +52,6 @@ public abstract class Command extends ListenerAdapter {
 		}
 		// Check if the command exists and run it.
 		if (containsCommand(event.getMessage())) {
-			if (!DatabaseUserManager.databaseContainsUser(event.getAuthor().getIdLong())) {
-				DatabaseUserManager.addUserToDatabase(event.getAuthor().getIdLong());
-			}
 			databaseUser = DatabaseUserManager.getDatabaseUser(event.getAuthor().getIdLong());
 
 			System.out.println("[" + getName() + "]: [" + event.getAuthor().getName() + "](" + event.getAuthor().getId() + ") executed the command.");
