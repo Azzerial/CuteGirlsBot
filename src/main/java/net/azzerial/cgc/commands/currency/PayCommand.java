@@ -1,4 +1,4 @@
-package net.azzerial.cgc.commands.Currency;
+package net.azzerial.cgc.commands.currency;
 
 import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.database.DatabaseUserManager;
@@ -77,7 +77,6 @@ public class PayCommand extends Command {
 			EmoteUtil.MONEY_WITH_WINGS, "Payment done", author,
 			"You payed " + user.getName() + " ¥`" + amount + "`. Updated balance: ¥`" + balance + "`",
 			null, null, null);
-
 		return ("Payed [" + user.getName() + "](" + user.getId() + ").");
 	}
 
@@ -95,17 +94,20 @@ public class PayCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return (null);
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/Pay-User");
 	}
 
 	@Override
 	public String getHelpDescription() {
-		return ("");
+		return ("Gives a user a set amount of your money.");
 	}
 
 	@Override
 	public String getHelpUsage() {
-		return ("");
+		return ("```md\n/pay @user <amount>\n```\n" +
+			"Where `<amount>` represents the amount of money you will give, which can either be:\n" +
+			"\t• A number, smaller than 1,000,000,000.\n" +
+			"\t• *all*, if you want to give all of your money.");
 	}
 
 	@Override

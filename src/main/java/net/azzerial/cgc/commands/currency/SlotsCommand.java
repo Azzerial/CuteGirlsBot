@@ -1,4 +1,4 @@
-package net.azzerial.cgc.commands.Currency;
+package net.azzerial.cgc.commands.currency;
 
 import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.database.DatabaseUserManager;
@@ -159,28 +159,28 @@ public class SlotsCommand extends Command {
 			if (score.get(WATERMELON).intValue() == 2) {
 				money = (int) Math.ceil(bet * 1);
 			} else if (score.get(WATERMELON).intValue() == 3) {
-				money = (int) Math.ceil(bet * 4);
+				money = (int) Math.ceil(bet * 3);
 			}
 		}
 		if (score.containsKey(CLOVER)) {
 			if (score.get(CLOVER).intValue() == 2) {
 				money = (int) Math.ceil(bet * 1.2);
 			} else if (score.get(CLOVER).intValue() == 3) {
-				money = (int) Math.ceil(bet * 6);
+				money = (int) Math.ceil(bet * 5);
 			}
 		}
 		if (score.containsKey(MONEY)) {
 			if (score.get(MONEY).intValue() == 2) {
 				money = (int) Math.ceil(bet * 1.5);
 			} else if (score.get(MONEY).intValue() == 3) {
-				money = (int) Math.ceil(bet * 10);
+				money = (int) Math.ceil(bet * 8);
 			}
 		}
 		if (score.containsKey(GEM)) {
 			if (score.get(GEM).intValue() == 2) {
 				money = (int) Math.ceil(bet * 2);
 			} else if (score.get(GEM).intValue() == 3) {
-				money = (int) Math.ceil(bet * 12);
+				money = (int) Math.ceil(bet * 10);
 			}
 		}
 
@@ -231,17 +231,21 @@ public class SlotsCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return (null);
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/Slot-Machine");
 	}
 
 	@Override
 	public String getHelpDescription() {
-		return ("");
+		return ("Gamble your money to get more money, or not. You have a bonus chance of winning by betting all of your money.\n" +
+			"Note that you won't lose your bet if you win one of the prizes.");
 	}
 
 	@Override
 	public String getHelpUsage() {
-		return ("");
+		return ("```md\n/slots <amount>\n```\n" +
+			"Where `<amount>` represents the amount of money you bet, which can either be:\n" +
+			"\t• A number, smaller than 1,000,000,000.\n" +
+			"\t• *all*, if you want to give all of your money.");
 	}
 
 	@Override

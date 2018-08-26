@@ -112,7 +112,7 @@ public class HelpCommand extends Command {
 		return ("```md\n/help [search]\n```\n" +
 			"Where `[search]` represents an optional parameter, which can either be:\n" +
 			"\t• A command's name.\n" +
-			"\t• A command's keyword.\n");
+			"\t• A command's keyword.");
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package net.azzerial.cgc.entities;
+package net.azzerial.cgc.database.entities.utils;
 
 public enum RankingType {
 	IDOL_COLLECTION(0),

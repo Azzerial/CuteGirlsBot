@@ -1,8 +1,8 @@
 package net.azzerial.cgc.database;
 
 import net.azzerial.cgc.database.entities.DatabaseUser;
-import net.azzerial.cgc.entities.Rank;
-import net.azzerial.cgc.entities.RankingType;
+import net.azzerial.cgc.database.entities.utils.Rank;
+import net.azzerial.cgc.database.entities.utils.RankingType;
 import net.azzerial.cgc.utils.MiscUtil;
 import net.azzerial.imcg.core.IdolsList;
 import net.azzerial.imcg.entities.Idol;

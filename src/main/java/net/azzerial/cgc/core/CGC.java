@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.concurrent.Executors;
 
 import javax.security.auth.login.LoginException;
 
 import net.azzerial.cgc.commands.*;
-import net.azzerial.cgc.commands.Currency.*;
+import net.azzerial.cgc.commands.currency.*;
+import net.azzerial.cgc.commands.imcg.IdolCommand;
 import net.azzerial.cgc.database.Database;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.Permissions;
+import net.azzerial.cgc.menu.core.MessageScheduler;
 import net.azzerial.imcg.core.IdolsList;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -30,6 +33,7 @@ public class CGC {
 	public static final int UNSUPPORTED_SYSTEM = 13;
 	
 	private static JDA api;
+	private static MessageScheduler scheduler;
 
 	public static String dataDirectory;
 	public static boolean ready;
@@ -53,11 +57,15 @@ public class CGC {
 			relaunchInUTF8();
 		}
 	}
-	
+
 	public static JDA getAPI() {
 		return (api);
 	}
-	
+
+	public static MessageScheduler getMessageScheduler() {
+		return (scheduler);
+	}
+
 	private static void setupBot() {
 		try {
 			// Load bot configuration settings.
@@ -83,13 +91,14 @@ public class CGC {
 			// Register the commands.
 	/*TO REWORK*/	HelpCommand command = new HelpCommand();
 			jda_builder.addEventListener(command.registerCommand(command));
-	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new BalanceCommand()));
+			jda_builder.addEventListener(command.registerCommand(new BalanceCommand()));
 			jda_builder.addEventListener(command.registerCommand(new DailyCommand()));
 	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new GiveCommand()));
+			jda_builder.addEventListener(command.registerCommand(new IdolCommand()));
 	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new OpCommand()));
-	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new PayCommand()));
+			jda_builder.addEventListener(command.registerCommand(new PayCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShutdownCommand()));
-	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new SlotsCommand()));
+			jda_builder.addEventListener(command.registerCommand(new SlotsCommand()));
 			jda_builder.addEventListener(command.registerCommand(new TestCommand()));
 			/* Commands to be added:
 			 *
@@ -99,6 +108,9 @@ public class CGC {
 			 * give
 			 * reset
 			 */
+
+			scheduler = new MessageScheduler(Executors.newSingleThreadScheduledExecutor());
+			jda_builder.addEventListener(scheduler);
 
 			// Login to Discord.
 			api = jda_builder.buildBlocking();

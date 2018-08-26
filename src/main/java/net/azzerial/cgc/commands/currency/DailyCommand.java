@@ -1,4 +1,4 @@
-package net.azzerial.cgc.commands.Currency;
+package net.azzerial.cgc.commands.currency;
 
 import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.database.DatabaseUserManager;

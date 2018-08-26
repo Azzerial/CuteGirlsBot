@@ -1,4 +1,4 @@
-package net.azzerial.cgc.commands.Currency;
+package net.azzerial.cgc.commands.currency;
 
 import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.database.DatabaseUserManager;
@@ -66,17 +66,18 @@ public class BalanceCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return (null);
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/User-Balance");
 	}
 
 	@Override
 	public String getHelpDescription() {
-		return ("");
+		return ("Shows how much money does a user have.");
 	}
 
 	@Override
 	public String getHelpUsage() {
-		return ("");
+		return ("```md\n/balance [@user]\n```\n" +
+			"Where `[@user]` represents an optional user mention.");
 	}
 
 	@Override

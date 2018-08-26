@@ -1,16 +1,16 @@
 package net.azzerial.cgc.commands;
 
+import net.azzerial.cgc.core.CGC;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.entities.DatabaseUser;
-import net.azzerial.cgc.entities.Rank;
-import net.azzerial.cgc.entities.RankingType;
+import net.azzerial.cgc.database.entities.utils.Rank;
+import net.azzerial.cgc.database.entities.utils.RankingType;
+import net.azzerial.cgc.menu.entities.IdolMenu;
 import net.azzerial.imcg.core.IdolsList;
 import net.azzerial.imcg.entities.Idol;
 import net.azzerial.imcg.entities.IdolCollection;
 import net.azzerial.imcg.entities.Leader;
-import net.azzerial.imcg.entities.IdolSkin;
 import net.azzerial.imcg.entities.utils.Progress;
-import net.azzerial.imcg.entities.utils.Stats;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -29,24 +29,22 @@ public class TestCommand extends Command {
 	public String onCommand(MessageReceivedEvent event, String[] args, MessageChannel channel, User author, User self) {
 		Idol idol = IdolsList.getIdol("Shiki Ichinose");
 
-		int number = databaseUser.getIdolCollection().getCollection(idol).getSkinData(0).getBasicSkinCount();
-		databaseUser.getIdolCollection().getCollection(idol).getSkinData(0).updateBasicSkinCount(number + 1);
-		DatabaseUserManager.updateUserIdolCollection(
-			databaseUser.getId(),
-			idol.getDatabaseName(),
-			databaseUser.getIdolCollection().getCollection(idol).convertToString()
-		);
-
-		//channel.sendMessage(idolInfoMessage(idol, author)).queue();
-		//channel.sendMessage(idolSkinMessage(idol, idol.getSkin(4), false, author)).queue();
-		//channel.sendMessage(userIdolCollectionInfoMessage(author, author)).queue();
+		IdolMenu menu = new IdolMenu.Builder()
+			.setMessageScheduler(CGC.getMessageScheduler())
+			.setUsers(author)
+			.setIdol(idol)
+			.setClosable(true)
+			.build();
+		if (menu != null) {
+			menu.display(channel);
+		}
 		return ("Tested.");
 	}
 
 	@Override
 	public List<String> getAliases() {
 		return (Arrays.asList(
-			"test"
+			"utils"
 		));
 	}
 
@@ -67,7 +65,7 @@ public class TestCommand extends Command {
 
 	@Override
 	public String getHelpUsage() {
-		return ("```md\n/test\n```");
+		return ("```md\n/utils\n```");
 	}
 
 	@Override
@@ -78,44 +76,6 @@ public class TestCommand extends Command {
 	@Override
 	public boolean isOpRequired() {
 		return (true);
-	}
-
-	private Message idolInfoMessage(Idol idol, User author) {
-		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(idol.getName(), null, idol.getIdolType().getIcon());
-		builder.setDescription("`Type` " + idol.getIdolType().asString() + "\n" +
-			"`Age` " + idol.getAge() + "\n" +
-			"`Birthday` " + idol.getBirthday().asString() + "\n" +
-			"`Height` " + idol.getHeight() + "cm\n" +
-			"`Weight` " + idol.getWeight() + "kg\n" +
-			"`BWH` " + idol.getMeasurements().asString() + "\n" +
-			"`Blood Plan` " + idol.getBloodType().asString() + "\n" +
-			"`Handedness` " + idol.getHandedness().asString());
-		builder.setThumbnail(idol.getProfilePicture());
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
-		builder.setColor(idol.getIdolType().getColor());
-		MessageEmbed embed = builder.build();
-		MessageBuilder mBuilder = new MessageBuilder(embed);
-		return (mBuilder.build());
-	}
-
-	private Message idolSkinMessage(Idol idol, IdolSkin skin, boolean evolved, User author) {
-		EmbedBuilder builder = new EmbedBuilder();
-		builder.setAuthor(skin.getThemeName(), null, idol.getIdolType().getIcon());
-		builder.setTitle("Rarity: " + skin.getRarity().asString() + (evolved ? "+" : ""));
-		if (evolved) {
-			builder.addField("Attack", "" + skin.getStats().getAttack(Stats.EVOLVED_BONUS), true);
-			builder.addField("Defense", "" + skin.getStats().getDefense(Stats.EVOLVED_BONUS), true);
-		} else {
-			builder.addField("Attack", "" + skin.getStats().getBaseAttack(), true);
-			builder.addField("Defense", "" + skin.getStats().getBaseDefense(), true);
-		}
-		builder.setImage(evolved ? skin.getEvolvedCard().getCard() : skin.getBasicCard().getCard());
-		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
-		builder.setColor(idol.getIdolType().getColor());
-		MessageEmbed embed = builder.build();
-		MessageBuilder mBuilder = new MessageBuilder(embed);
-		return (mBuilder.build());
 	}
 
 	private Message userIdolCollectionInfoMessage(User user, User author) {
