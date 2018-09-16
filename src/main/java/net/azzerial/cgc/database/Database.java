@@ -3,7 +3,6 @@ package net.azzerial.cgc.database;
 import net.azzerial.cgc.core.CGC;
 import net.azzerial.cgc.database.entities.DatabaseUser;
 import net.azzerial.cgc.utils.MiscUtil;
-import net.azzerial.imcg.idols.core.CuteGirl;
 import net.azzerial.imcg.items.core.ItemType;
 
 import java.sql.*;
@@ -42,15 +41,6 @@ public class Database {
 			statement.executeUpdate("CREATE TABLE IF NOT EXISTS " +
 				"ops(" +
 					"id INTEGER NOT NULL UNIQUE, " +
-					"PRIMARY KEY (id)" +
-				")");
-
-			// Create the servers table
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS " +
-				"servers(" +
-					"id INTEGER NOT NULL UNIQUE, " +
-					"prefix TEXT NOT NULL, " +
-					"admins TEXT NOT NULL, " +
 					"PRIMARY KEY (id)" +
 				")");
 

@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 
 public class ListingMenu extends Menu {
 
-	private static final String PLAY = "\u25B6\uFE0F";
-	private static final String REVERSE = "\u25C0\uFE0F";
+	private static final String PLAY = "\u25B6";
+	private static final String REVERSE = "\u25C0";
 	private static final String FAST_FORWARD = "\u23E9";
 	private static final String FAST_REVERSE = "\u23EA";
 	private static final String HEAVY_MULTIPLICATION_X = "\u2716";

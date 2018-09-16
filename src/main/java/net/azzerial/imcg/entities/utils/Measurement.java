@@ -25,7 +25,11 @@ public class Measurement {
 	}
 
 	public String asString() {
-		return (new StringBuilder().append(bust).append("-").append(waist).append("-").append(hip).toString());
+		return (new StringBuilder()
+			.append(bust == 0 ? "?" : bust).append("-")
+			.append(waist == 0 ? "?" : waist).append("-")
+			.append(hip == 0 ? "?" : hip).toString()
+		);
 	}
 
 }

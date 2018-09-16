@@ -1,4 +1,4 @@
-package net.azzerial.imcg.idols;
+package net.azzerial.imcg.idols.cute;
 
 import net.azzerial.imcg.idols.core.CuteGirl;
 import net.azzerial.imcg.entities.Idol;
@@ -57,11 +57,23 @@ public class ShikiIchinose extends CuteGirl {
 				new Card("https://www.project-imas.com/w/images/3/33/ShikiIchinoseSR1.jpg", "https://www.project-imas.com/w/images/thumb/3/33/ShikiIchinoseSR1.jpg/192px-ShikiIchinoseSR1.jpg"),
 				new Card("https://www.project-imas.com/w/images/2/21/ShikiIchinoseSR%2B1.jpg", "https://www.project-imas.com/w/images/thumb/2/21/ShikiIchinoseSR%2B1.jpg/192px-ShikiIchinoseSR%2B1.jpg")
 			), new IdolSkin(
-				4, "Culture Bloom", "文明開花",
+				4, "Perfume Tripper", "ﾊﾟﾌｭｰﾑﾄﾘｯﾊﾟｰ",
+				Rarity.S_RARE,
+				new Stats(0, 0),
+				new Card("https://www.project-imas.com/w/images/8/84/ShikiIchinoseSR2.jpg", "https://www.project-imas.com/w/images/thumb/8/84/ShikiIchinoseSR2.jpg/192px-ShikiIchinoseSR2.jpg"),
+				new Card("https://www.project-imas.com/w/images/8/82/ShikiIchinoseSR%2B2.jpg", "https://www.project-imas.com/w/images/thumb/8/82/ShikiIchinoseSR%2B2.jpg/192px-ShikiIchinoseSR%2B2.jpg")
+			), new IdolSkin(
+				5, "Culture Bloom", "文明開花",
 				Rarity.S_RARE,
 				new Stats(0, 0),
 				new Card("https://www.project-imas.com/w/images/e/e0/Shiki_SR3.jpg", "https://www.project-imas.com/w/images/thumb/e/e0/Shiki_SR3.jpg/192px-Shiki_SR3.jpg"),
 				new Card("https://www.project-imas.com/w/images/6/6c/Shiki_SR3%2B.jpg", "https://www.project-imas.com/w/images/thumb/6/6c/Shiki_SR3%2B.jpg/192px-Shiki_SR3%2B.jpg")
+			), new IdolSkin(
+				6, "Odor of Night", "夜の匂い",
+				Rarity.S_RARE,
+				new Stats(0, 0),
+				new Card("https://www.project-imas.com/w/images/5/58/Shiki_SR5.jpg", "https://www.project-imas.com/w/images/thumb/5/58/Shiki_SR5.jpg/192px-Shiki_SR5.jpg"),
+				new Card("https://www.project-imas.com/w/images/e/ea/Shiki_SR5%2B.jpg", "https://www.project-imas.com/w/images/thumb/e/ea/Shiki_SR5%2B.jpg/192px-Shiki_SR5%2B.jpg")
 			)
 		));
 	}

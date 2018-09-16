@@ -3,7 +3,9 @@ package net.azzerial.imcg.idols.core;
 import net.azzerial.imcg.entities.Idol;
 import net.azzerial.imcg.entities.utils.IdolTier;
 import net.azzerial.imcg.entities.utils.IdolType;
-import net.azzerial.imcg.idols.*;
+import net.azzerial.imcg.idols.cool.*;
+import net.azzerial.imcg.idols.cute.*;
+import net.azzerial.imcg.idols.passion.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,26 @@ public class IdolsList {
 		this.cuteGirls = new ArrayList<CuteGirl>();
 		this.idols = new ArrayList<Idol>();
 
-		// Shiki Ichinose
+		// Cute idols
 		idols.add(addToCGList(new ShikiIchinose()));
+		idols.add(addToCGList(new KozueYusa()));
+		idols.add(addToCGList(new WakabaKusakabe()));
+		idols.add(addToCGList(new AnzuFutaba()));
+		idols.add(addToCGList(new KotokaSaionji()));
+
+		// Cool idols
+		idols.add(addToCGList(new NaoKamiya()));
+		idols.add(addToCGList(new HinaAraki()));
+		idols.add(addToCGList(new ShinoHiiragi()));
+		idols.add(addToCGList(new NoaTakamine()));
+		idols.add(addToCGList(new KaedeTakagaki()));
+
+		// Passion idols
+		idols.add(addToCGList(new TokikoZaizen()));
+		idols.add(addToCGList(new NahoEbihara()));
+		idols.add(addToCGList(new AyunaHamakawa()));
+		idols.add(addToCGList(new RikaJougasaki()));
+		idols.add(addToCGList(new MikaJougasaki()));
 	}
 
 	public static IdolsList loadIdols() {
