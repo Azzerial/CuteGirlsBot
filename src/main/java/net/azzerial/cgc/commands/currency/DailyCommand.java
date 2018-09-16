@@ -1,9 +1,9 @@
 package net.azzerial.cgc.commands.currency;
 
 import net.azzerial.cgc.commands.Command;
-import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
+import net.azzerial.cgc.utils.MiscUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -23,7 +23,7 @@ public class DailyCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 
@@ -54,7 +54,7 @@ public class DailyCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR,"Daily reward already claimed.", getGithubPage(), author,
 					"You already claimed your daily reward today! Please wait another `" + time + "` before using it again.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!Daily pay already claimed.");
 			}
 		}
@@ -79,17 +79,17 @@ public class DailyCommand extends Command {
 		long balance = currentBalance + dailyPay;
 
 		// Update in database the values.
-		DatabaseUserManager.updateUserBalance(author.getIdLong(), balance);
+		databaseUser.updateBalance(balance);
 		if (currentStreak < dailyStreakMax) {
 			currentStreak += 1;
-			DatabaseUserManager.updateUserDailyStreak(author.getIdLong(), currentStreak);
+			databaseUser.updateDailyStreak(currentStreak);
 		}
-		DatabaseUserManager.updateUserLastDailyTime(author.getIdLong(), now);
+		databaseUser.updateLastDailyTime(now);
 
 		MessageUtil.sendActionMessage(channel,
 			EmoteUtil.PURSE, "Daily reward", author,
 			"¥`" + dailyPay + "` have been added to your wallet. Updated balance: ¥`" + balance + "`",
-			null, null, null);
+			null, null, false, null);
 		return ("Earned daily reward.");
 	}
 

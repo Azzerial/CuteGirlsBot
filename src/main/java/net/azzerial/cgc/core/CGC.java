@@ -10,12 +10,15 @@ import javax.security.auth.login.LoginException;
 
 import net.azzerial.cgc.commands.*;
 import net.azzerial.cgc.commands.currency.*;
-import net.azzerial.cgc.commands.imcg.IdolCommand;
+import net.azzerial.cgc.commands.fun.HugCommand;
+import net.azzerial.cgc.commands.imcg.*;
 import net.azzerial.cgc.database.Database;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.Permissions;
 import net.azzerial.cgc.menu.core.MessageScheduler;
-import net.azzerial.imcg.core.IdolsList;
+import net.azzerial.cgc.utils.DebugUtil;
+import net.azzerial.imcg.idols.core.IdolsList;
+import net.azzerial.imcg.items.core.ItemsList;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -74,11 +77,15 @@ public class CGC {
 			// Cache database.
 			Database.getInstance();
 			IdolsList.loadIdols();			// Load the idols list.
+			ItemsList.loadItems();			// Load the items.
 			DatabaseUserManager.loadUsers();	// Load the users.
 
 			// Set the Ops list.
 			Permissions.setupPermissions();
 			System.out.println("[Core/CGC]: Loaded Permissions Ops.");
+
+			// Offline
+			//System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
 
 			// Start the JDA api.
 			JDABuilder jda_builder = new JDABuilder(AccountType.BOT);
@@ -89,28 +96,26 @@ public class CGC {
 			jda_builder.setStatus(settings.getStatus());
 			
 			// Register the commands.
-	/*TO REWORK*/	HelpCommand command = new HelpCommand();
+			HelpCommand command = new HelpCommand();
 			jda_builder.addEventListener(command.registerCommand(command));
 			jda_builder.addEventListener(command.registerCommand(new BalanceCommand()));
+			jda_builder.addEventListener(command.registerCommand(new CollectionCommand()));
 			jda_builder.addEventListener(command.registerCommand(new DailyCommand()));
-	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new GiveCommand()));
+			jda_builder.addEventListener(command.registerCommand(new GiveCommand()));
+			jda_builder.addEventListener(command.registerCommand(new HugCommand()));
 			jda_builder.addEventListener(command.registerCommand(new IdolCommand()));
-	/*NO WIKI*/	jda_builder.addEventListener(command.registerCommand(new OpCommand()));
+			jda_builder.addEventListener(command.registerCommand(new InventoryCommand()));
+			jda_builder.addEventListener(command.registerCommand(new OpCommand()));
 			jda_builder.addEventListener(command.registerCommand(new PayCommand()));
+			jda_builder.addEventListener(command.registerCommand(new ShopCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShutdownCommand()));
 			jda_builder.addEventListener(command.registerCommand(new SlotsCommand()));
 			jda_builder.addEventListener(command.registerCommand(new TestCommand()));
-			/* Commands to be added:
-			 *
-			 * club
-			 * shop
-			 * idol
-			 * give
-			 * reset
-			 */
 
+			// Add some needed event listeners.
 			scheduler = new MessageScheduler(Executors.newSingleThreadScheduledExecutor());
 			jda_builder.addEventListener(scheduler);
+			jda_builder.addEventListener(new DebugUtil(false));
 
 			// Login to Discord.
 			api = jda_builder.buildBlocking();

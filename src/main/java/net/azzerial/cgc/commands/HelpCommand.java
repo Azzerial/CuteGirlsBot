@@ -24,10 +24,14 @@ public class HelpCommand extends Command {
 	
 	public HelpCommand() {
 		commands = new TreeMap<String, Command>();
+		System.out.println("[Command] Commands missing help page:");
 	}
 	
 	public Command registerCommand(Command command) {
 		commands.put(command.getAliases().get(0), command);
+		if (command.getGithubPage() == null) {
+			System.out.println("- " + command.getName());
+		}
 		return (command);
 	}
 	
@@ -37,7 +41,7 @@ public class HelpCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 		Object[] keys = commands.keySet().toArray();
@@ -48,12 +52,13 @@ public class HelpCommand extends Command {
 			List<String> list = new ArrayList<String>();
 			for (int i = 0; i < keys.length; i += 1) {
 				Command cmd = commands.get(keys[i]);
-				list.add("`" + cmd.getName() + "`");
+				list.add("`" + cmd.getName() + (cmd.getGithubPage() == null ? "*" : "") + "`");
 			}
 
 			EmbedBuilder builder = new EmbedBuilder();
 			builder.setTitle(EmoteUtil.OPEN_BOOK + " Cute Girls Collection commands.");
-			builder.setDescription(MiscUtil.listToString(list, ", "));
+			builder.setDescription(MiscUtil.listToString(list, ", ") + "\n\n" +
+				"Commands having a `*` don't have a help page yet.");
 			builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 			builder.setColor(new Color(255, 226, 148));
 			MessageEmbed embed = builder.build();
@@ -74,14 +79,14 @@ public class HelpCommand extends Command {
 				MessageUtil.sendHelpMessage(channel,
 					cmd.getName() + " command.", cmd.getGithubPage(), author,
 					cmd.getHelpDescription(), cmd.getHelpUsage(),
-					null, null, null);
+					null, null, true, MiscUtil.clearReactionsOnTimeout);
 				return ("Sent the help page for the " + cmd.getName() + " command.");
 			}
 		}
 		MessageUtil.sendErrorMessage(channel,
 			MessageUtil.ErrorType.ERROR, "Command not found.", getGithubPage(), author,
 			"There are no command named `" + command + "`.",
-			null, null, null);
+			null, null, true, MiscUtil.deleteOnTimeout);
 		return ("!Command not found");
 	}
 

@@ -1,6 +1,9 @@
 package net.azzerial.cgc.database.entities;
 
+import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.imcg.entities.IdolCollection;
+import net.azzerial.imcg.items.core.Inventory;
+import net.azzerial.imcg.items.core.ItemType;
 
 import java.util.GregorianCalendar;
 
@@ -11,13 +14,15 @@ public class DatabaseUser {
 	private int dailyStreak;
 	private GregorianCalendar lastDailyTime;
 	private IdolCollection idolCollection;
+	private Inventory inventory;
 
-	public DatabaseUser(long id, long balance, int dailyStreak, GregorianCalendar lastDailyTime, IdolCollection idolCollection) {
+	public DatabaseUser(long id, long balance, int dailyStreak, GregorianCalendar lastDailyTime, IdolCollection idolCollection, Inventory inventory) {
 		this.id = id;
 		this.balance = balance;
 		this.dailyStreak = dailyStreak;
 		this.lastDailyTime = lastDailyTime;
 		this.idolCollection = idolCollection;
+		this.inventory = inventory;
 	}
 
 	public long getId() {
@@ -28,33 +33,52 @@ public class DatabaseUser {
 		return (balance);
 	}
 
+	public boolean updateBalance(long value) {
+		if (DatabaseUserManager.updateUserBalance(id, value)) {
+			this.balance = value;
+			return (true);
+		}
+		return (false);
+	}
+
 	public int getDailyStreak() {
 		return (dailyStreak);
+	}
+
+	public boolean updateDailyStreak(int value) {
+		if (DatabaseUserManager.updateUserDailyStreak(id, value)) {
+			this.dailyStreak = value;
+			return (true);
+		}
+		return (false);
 	}
 
 	public GregorianCalendar getLastDailyTime() {
 		return (lastDailyTime);
 	}
 
+	public boolean updateLastDailyTime(GregorianCalendar calendar) {
+		if (DatabaseUserManager.updateUserLastDailyTime(id, calendar)) {
+			this.lastDailyTime = calendar;
+			return (true);
+		}
+		return (false);
+	}
+
 	public IdolCollection getIdolCollection() {
 		return (idolCollection);
 	}
 
-	public enum Column {
-		ID("user_id"),
-		BALANCE("balance"),
-		DAILY_STREAK("daily_streak"),
-		LAST_DAILY_TIME("last_daily_time");
+	public Inventory getInventory() {
+		return (inventory);
+	}
 
-		private String column;
-
-		Column(String column) {
-			this.column = column;
+	public boolean updateInventory(ItemType itemType, int value) {
+		if (DatabaseUserManager.updateUserInventory(id, itemType, value)) {
+			this.inventory.updateItemCount(id, itemType, value);
+			return (true);
 		}
-
-		public String asString() {
-			return (column);
-		}
+		return (false);
 	}
 
 }

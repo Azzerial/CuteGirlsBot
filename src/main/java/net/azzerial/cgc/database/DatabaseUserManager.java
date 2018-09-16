@@ -1,14 +1,16 @@
 package net.azzerial.cgc.database;
 
 import net.azzerial.cgc.database.entities.DatabaseUser;
+import net.azzerial.cgc.database.entities.utils.Column;
 import net.azzerial.cgc.database.entities.utils.Rank;
 import net.azzerial.cgc.database.entities.utils.RankingType;
 import net.azzerial.cgc.utils.MiscUtil;
-import net.azzerial.imcg.core.IdolsList;
+import net.azzerial.imcg.idols.core.IdolsList;
 import net.azzerial.imcg.entities.Idol;
 import net.azzerial.imcg.entities.IdolCollection;
 import net.azzerial.imcg.entities.utils.SkinData;
-import net.azzerial.imcg.idols.core.CuteGirl;
+import net.azzerial.imcg.items.core.Inventory;
+import net.azzerial.imcg.items.core.ItemType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,11 +21,19 @@ public class DatabaseUserManager {
 
 	public static final String ADD_USER = "ADD_USER";
 	public static final String GET_USERS = "GET_USERS";
+
 	public static final String ADD_USER_CURRENCY = "ADD_USER_CURRENCY";
 	public static final String GET_USER_CURRENCY = "GET_USER_CURRENCY";
 	public static final String UPDATE_USER_CURRENCY_BALANCE = "UPDATE_USER_CURRENCY_BALANCE";
 	public static final String UPDATE_USER_CURRENCY_DAILY_STREAK = "UPDATE_USER_CURRENCY_DAILY_STREAK";
 	public static final String UPDATE_USER_CURRENCY_LAST_DAILY_TIME = "UPDATE_USER_CURRENCY_LAST_DAILY_TIME";
+
+	public static final String ADD_USER_IDOL_COLLECTION = "ADD_USER_IDOL_COLLECTION";
+	public static final String GET_IDOLS_IN_DATABASE = "GET_IDOLS_IN_DATABASE";
+	public static final String GET_USER_IDOL_COLLECTION = "GET_USER_IDOL_COLLECTION";
+
+	public static final String ADD_USER_INVENTORY = "ADD_USER_INVENTORY";
+	public static final String GET_USER_INVENTORY = "GET_USER_INVENTORY";
 
 	private static List<DatabaseUser> usersCache;
 	private static DatabaseUserManager instance;
@@ -36,7 +46,7 @@ public class DatabaseUserManager {
 		try {
 			ResultSet usersIds = Database.getInstance().getStatement(GET_USERS).executeQuery();
 			while (usersIds.next()) {
-				long id = usersIds.getLong(DatabaseUser.Column.ID.asString());
+				long id = usersIds.getLong(Column.ID.asString());
 
 				// Query user_currency for the current user id.
 				PreparedStatement statementUserCurrency = Database.getInstance().getStatement(GET_USER_CURRENCY);
@@ -44,12 +54,12 @@ public class DatabaseUserManager {
 				ResultSet userCurrencyResultSet = statementUserCurrency.executeQuery();
 
 				// Get user_currency values.
-				long balance = userCurrencyResultSet.getLong(DatabaseUser.Column.BALANCE.asString());
-				int daily_streak = userCurrencyResultSet.getInt(DatabaseUser.Column.DAILY_STREAK.asString());
-				GregorianCalendar lastDailyTime = MiscUtil.stringToGregorianCalendar(userCurrencyResultSet.getString(DatabaseUser.Column.LAST_DAILY_TIME.asString()));
+				long balance = userCurrencyResultSet.getLong(Column.BALANCE.asString());
+				int daily_streak = userCurrencyResultSet.getInt(Column.DAILY_STREAK.asString());
+				GregorianCalendar lastDailyTime = MiscUtil.stringToGregorianCalendar(userCurrencyResultSet.getString(Column.LAST_DAILY_TIME.asString()));
 
 				// Query user_idol_collection for the current user id.
-				PreparedStatement statementUserIdolCollection = Database.getInstance().getStatement(CuteGirl.GET_USER_IDOL_COLLECTION);
+				PreparedStatement statementUserIdolCollection = Database.getInstance().getStatement(GET_USER_IDOL_COLLECTION);
 				statementUserIdolCollection.setLong(1, id);
 				ResultSet userIdolCollectionResultSet = statementUserIdolCollection.executeQuery();
 
@@ -58,9 +68,16 @@ public class DatabaseUserManager {
 				for (int i = 0; i < idols.size(); i += 1) {
 					Idol idol = idols.get(i);
 					IdolCollection.Collection.Builder collectionBuilder = new IdolCollection.Collection.Builder();
-					String[] skins = userIdolCollectionResultSet.getString(idol.getDatabaseName()).split(",");
+					String[] str = userIdolCollectionResultSet.getString(idol.getDatabaseName()).split(";");
+					String[] skins = str[1].split(",");
 
+					collectionBuilder.setUserId(id);
 					collectionBuilder.setIdolId(idol.getId());
+					if (str[0].equalsIgnoreCase("T")) {
+						collectionBuilder.isIdolOwned(true);
+					} else if (str[0].equalsIgnoreCase("F"))  {
+						collectionBuilder.isIdolOwned(false);
+					}
 					for (int n = 0; n < skins.length; n += 1) {
 						String[] s1 = skins[n].split(":");
 						int skinId = Integer.parseInt(s1[0]);
@@ -73,7 +90,25 @@ public class DatabaseUserManager {
 					idolCollectionBuilder.addIdol(idol.getId(), collectionBuilder.build());
 				}
 
-				DatabaseUser user = new DatabaseUser(id, balance, daily_streak, lastDailyTime, idolCollectionBuilder.build());
+				// Query user_inventory for the current user id.
+				PreparedStatement statementUserInventory = Database.getInstance().getStatement(GET_USER_INVENTORY);
+				statementUserInventory.setLong(1, id);
+				ResultSet userInventoryResultSet = statementUserInventory.executeQuery();
+
+				// Get user_inventory values.
+				Inventory inventory = new Inventory(
+					userInventoryResultSet.getInt(ItemType.IDOL_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.SPECIAL_IDOL_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.DIVINE_IDOL_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.SKIN_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.SPECIAL_SKIN_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.DIVINE_SKIN_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.PASSIVE_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.SPECIAL_PASSIVE_BOX.asString()),
+					userInventoryResultSet.getInt(ItemType.DIVINE_PASSIVE_BOX.asString())
+				);
+
+				DatabaseUser user = new DatabaseUser(id, balance, daily_streak, lastDailyTime, idolCollectionBuilder.build(), inventory);
 				users.add(user);
 			}
 		} catch (SQLException e) {
@@ -92,16 +127,7 @@ public class DatabaseUserManager {
 
 	// --- Database ---
 
-	public static DatabaseUser addUserToDatabaseAndReturn(long id) {
-		addUserToDatabase(id);
-		return (getDatabaseUser(id));
-	}
-
-	public static boolean addUserToDatabase(long id) {
-		if (isUserInDatabase(id)) {
-			return (false);
-		}
-
+	public static DatabaseUser addUserToDatabase(long id) {
 		try {
 			// Set user insert statement.
 			PreparedStatement statementUser = Database.getInstance().getStatement(ADD_USER);
@@ -109,36 +135,39 @@ public class DatabaseUserManager {
 			// Set user_currency insert statement.
 			PreparedStatement statementUserCurrency = Database.getInstance().getStatement(ADD_USER_CURRENCY);
 			statementUserCurrency.setLong(1, id);
+			// Set user_idol_collection insert statement.
+			PreparedStatement statementUserIdolCollection = Database.getInstance().getStatement(ADD_USER_IDOL_COLLECTION);
+			statementUserIdolCollection.setLong(1, id);
+			// Set user_inventory insert statement.
+			PreparedStatement statementUserInventory = Database.getInstance().getStatement(ADD_USER_INVENTORY);
+			statementUserInventory.setLong(1, id);
 
-			if (statementUser.executeUpdate() == 1 && statementUserCurrency.executeUpdate() == 1) {
-				return (usersCache.add(createDefaultUser(id)));
+			if (statementUser.executeUpdate() == 1
+				&& statementUserCurrency.executeUpdate() == 1
+				&& statementUserIdolCollection.executeUpdate() == 1
+				&& statementUserInventory.executeUpdate() == 1) {
+				DatabaseUser user = createDefaultUser(id);
+
+				usersCache.add(user);
+				return (user);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (false);
+		return (null);
 	}
 
 	public static boolean updateUserBalance(long id, long newBalance) {
 		if (!isUserInDatabase(id)) {
 			return (false);
 		}
-		DatabaseUser user = getDatabaseUser(id);
 
 		try {
 			PreparedStatement statement = Database.getInstance().getStatement(DatabaseUserManager.UPDATE_USER_CURRENCY_BALANCE);
 			statement.setLong(1, newBalance);
 			statement.setLong(2, id);
-			if (statement.executeUpdate() == 1) {
-				return (overrideCachedDatabaseUser(
-					new DatabaseUser(
-						user.getId(),
-						newBalance,
-						user.getDailyStreak(),
-						user.getLastDailyTime(),
-						user.getIdolCollection()
-					)
-				));
+			if (statement.executeUpdate() != -1) {
+				return (true);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -163,7 +192,8 @@ public class DatabaseUserManager {
 						user.getBalance(),
 						newDailyStreak,
 						user.getLastDailyTime(),
-						user.getIdolCollection()
+						user.getIdolCollection(),
+						user.getInventory()
 					)
 				));
 			}
@@ -190,7 +220,8 @@ public class DatabaseUserManager {
 						user.getBalance(),
 						user.getDailyStreak(),
 						newLastDailyTime,
-						user.getIdolCollection()
+						user.getIdolCollection(),
+						user.getInventory()
 					)
 				));
 			}
@@ -202,6 +233,10 @@ public class DatabaseUserManager {
 
 	public static boolean updateUserIdolCollection(long userId, String columnName, String value) {
 		return (Database.getInstance().updateIdolCollectionInDatabase(userId, columnName, value));
+	}
+
+	public static boolean updateUserInventory(long userId, ItemType itemType, int value) {
+		return (Database.getInstance().updateInventoryInDatabase(userId, itemType, value));
 	}
 
 	// --- Class ---
@@ -221,10 +256,7 @@ public class DatabaseUserManager {
 				return (usersCache.get(i));
 			}
 		}
-		if (!isUserInDatabase(id)) {
-			return (addUserToDatabaseAndReturn(id));
-		}
-		return (null);
+		return (addUserToDatabase(id));
 	}
 
 	public static Rank getUserRank(DatabaseUser user, RankingType rankingType) {
@@ -250,7 +282,7 @@ public class DatabaseUserManager {
 
 			switch (rankingType) {
 				case IDOL_COLLECTION:
-					if (lastProgressValue != u.getIdolCollection().getCollectionsProgress().getProgress()) {
+					if (lastProgressValue != u.getIdolCollection().getCollectionsCardsProgress().getProgress()) {
 						rank = i;
 					}
 					break;
@@ -270,7 +302,7 @@ public class DatabaseUserManager {
 	// --- Utility ---
 
 	private static DatabaseUser createDefaultUser(long id) {
-		return (new DatabaseUser(id, 0, 0, null, IdolCollection.createNewEmptyCollection()));
+		return (new DatabaseUser(id, 0, 0, null, IdolCollection.createNewEmptyCollection(id), Inventory.createNewEmptyInventory()));
 	}
 
 	private static boolean overrideCachedDatabaseUser(DatabaseUser newDatabaseUser) {

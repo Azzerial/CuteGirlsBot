@@ -1,14 +1,27 @@
 package net.azzerial.cgc.utils;
 
 import net.azzerial.cgc.database.entities.DatabaseUser;
-import net.azzerial.imcg.entities.IdolSkin;
+import net.dv8tion.jda.core.entities.Message;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class MiscUtil {
+
+	// General utils.
+
+	public static final String INVISIBLE_SEPARATOR = "\u2063";
+
+	public static final Consumer<Message> deleteOnTimeout = (m) -> {
+		m.delete().queue();
+	};
+
+	public static final Consumer<Message> clearReactionsOnTimeout = (m) -> {
+		m.clearReactions().queue();
+	};
 
 	// Database utils.
 
@@ -73,7 +86,7 @@ public class MiscUtil {
 
 	public static class sortDatabaseUserByIdolCollectionProgress implements Comparator<DatabaseUser> {
 		public int compare(DatabaseUser o1, DatabaseUser o2) {
-			return (o2.getIdolCollection().getCollectionsProgress().getProgress() - o1.getIdolCollection().getCollectionsProgress().getProgress());
+			return (o2.getIdolCollection().getCollectionsCardsProgress().getProgress() - o1.getIdolCollection().getCollectionsCardsProgress().getProgress());
 		}
 	}
 

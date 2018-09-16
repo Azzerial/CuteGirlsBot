@@ -1,18 +1,20 @@
-package net.azzerial.imcg.entities;
+package net.azzerial.imcg.entities.unused;
 
-import net.azzerial.imcg.core.IdolsList;
+import net.azzerial.imcg.idols.core.IdolsList;
+import net.azzerial.imcg.entities.Idol;
+import net.azzerial.imcg.entities.IdolSkin;
 import net.azzerial.imcg.entities.utils.Card;
 
 public class Leader {
 
 	private final int idolId;
 	private final int idolSkinId;
-	private final boolean isEvolvedCard;
+	private final boolean isEvolved;
 
-	public Leader(int idolId, int idolSkinId, boolean isEvolvedCard) {
+	public Leader(int idolId, int idolSkinId, boolean isEvolved) {
 		this.idolId = idolId;
 		this.idolSkinId = idolSkinId;
-		this.isEvolvedCard = isEvolvedCard;
+		this.isEvolved = isEvolved;
 	}
 
 	public int getIdolId() {
@@ -23,8 +25,8 @@ public class Leader {
 		return (idolSkinId);
 	}
 
-	public boolean isEvolvedCard() {
-		return (isEvolvedCard);
+	public boolean isEvolved() {
+		return (isEvolved);
 	}
 
 	public Idol getIdol() {
@@ -36,7 +38,7 @@ public class Leader {
 	}
 
 	public Card getCard() {
-		if (isEvolvedCard) {
+		if (isEvolved) {
 			return (getIdolSkin().getEvolvedCard());
 		} else {
 			return (getIdolSkin().getBasicCard());
@@ -47,7 +49,7 @@ public class Leader {
 		StringBuilder builder = new StringBuilder();
 
 		builder.append(getIdolSkin().getRarity().asString());
-		if (isEvolvedCard) {
+		if (isEvolved) {
 			builder.append("+");
 		}
 		return (builder.toString());

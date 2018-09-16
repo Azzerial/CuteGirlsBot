@@ -2,8 +2,10 @@ package net.azzerial.cgc.commands.currency;
 
 import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.database.DatabaseUserManager;
+import net.azzerial.cgc.database.entities.DatabaseUser;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
+import net.azzerial.cgc.utils.MiscUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -19,7 +21,7 @@ public class GiveCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 
@@ -28,7 +30,7 @@ public class GiveCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "No user mentioned.", getGithubPage(), author,
 				"You need to mention to user you want to pay.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return ("No user mentioned.");
 		}
 
@@ -41,7 +43,7 @@ public class GiveCommand extends Command {
 		MessageUtil.sendErrorMessage(channel,
 			MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 			"The provided type argument is invalid.",
-			null, null, null);
+			null, null, true, MiscUtil.deleteOnTimeout);
 		return ("!Wrong usage");
 	}
 
@@ -84,14 +86,15 @@ public class GiveCommand extends Command {
 
 	// Money argument
 	public String giveMoney(MessageChannel channel, User author, User user, String arg) {
-		long mentionedUserBalance = DatabaseUserManager.getDatabaseUser(user.getIdLong()).getBalance();
+		DatabaseUser mentionedDatabaseUser = DatabaseUserManager.getDatabaseUser(user.getIdLong());
+		long mentionedUserBalance = mentionedDatabaseUser.getBalance();
 		long amount;
 		if (arg.matches("[0-9]+")) {
 			if (arg.length() > 9) {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Payment value is too big.", getGithubPage(), author,
 					"You can't pay that much money in one transaction.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!Payment value is too big.");
 			}
 			amount = Long.parseLong(arg);
@@ -99,17 +102,17 @@ public class GiveCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Incorrect payment value.", getGithubPage(), author,
 				"You must enter a number. `" + arg + "` isn't a valid payment value.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return ("!Incorrect payment value.");
 		}
 		// Send payment.
 		mentionedUserBalance += amount;
-		DatabaseUserManager.updateUserBalance(user.getIdLong(), mentionedUserBalance);
+		mentionedDatabaseUser.updateBalance(mentionedUserBalance);
 
 		MessageUtil.sendActionMessage(channel,
 			EmoteUtil.CREDIT_CARD, "Transaction done", author,
 			user.getName() + " received ¥`" + amount + "`. Updated his balance to: ¥`" + mentionedUserBalance + "`",
-			null, null, null);
+			null, null, false, null);
 
 		return ("Gave money to " + user.getName() + "](" + user.getId() + ".");
 	}

@@ -1,9 +1,9 @@
 package net.azzerial.imcg.entities.utils;
 
 public enum Rarity {
-	NORMAL(0),
-	RARE(1),
-	S_RARE(2);
+	NORMAL(1),
+	RARE(2),
+	S_RARE(3);
 
 	private int rarity;
 
@@ -16,12 +16,12 @@ public enum Rarity {
 	}
 
 	public String asString() {
-		switch (rarity) {
-			case 0:
+		switch (this) {
+			case NORMAL:
 				return ("Normal");
-			case 1:
+			case RARE:
 				return ("Rare");
-			case 2:
+			case S_RARE:
 				return ("S Rare");
 			default:
 				return ("");

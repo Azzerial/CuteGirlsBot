@@ -1,8 +1,10 @@
 package net.azzerial.cgc.database;
 
 import net.azzerial.cgc.core.CGC;
+import net.azzerial.cgc.database.entities.DatabaseUser;
 import net.azzerial.cgc.utils.MiscUtil;
 import net.azzerial.imcg.idols.core.CuteGirl;
+import net.azzerial.imcg.items.core.ItemType;
 
 import java.sql.*;
 
@@ -76,6 +78,22 @@ public class Database {
 					"PRIMARY KEY (user_id)" +
 				")");
 
+			// Create the user_inventory table
+			statement.executeUpdate("CREATE TABLE IF NOT EXISTS " +
+				"user_inventory(" +
+					"user_id INTEGER NOT NULL UNIQUE, " +
+					"idol_box INTEGER DEFAULT 0, " +
+					"special_idol_box INTEGER DEFAULT 0, " +
+					"divine_idol_box INTEGER DEFAULT 0, " +
+					"skin_box INTEGER DEFAULT 0, " +
+					"special_skin_box INTEGER DEFAULT 0, " +
+					"divine_skin_box INTEGER DEFAULT 0, " +
+					"passive_box INTEGER DEFAULT 0, " +
+					"special_passive_box INTEGER DEFAULT 0, " +
+					"divine_passive_box INTEGER DEFAULT 0, " +
+					"PRIMARY KEY (user_id)" +
+				")");
+
 			// ops statements
 			preparedStatements.put(Permissions.ADD_OP, connection.prepareStatement("INSERT INTO ops (id) VALUES (?)"));
 			preparedStatements.put(Permissions.GET_OPS, connection.prepareStatement("SELECT * FROM ops"));
@@ -93,8 +111,13 @@ public class Database {
 			preparedStatements.put(DatabaseUserManager.UPDATE_USER_CURRENCY_LAST_DAILY_TIME, connection.prepareStatement("UPDATE user_currency SET last_daily_time = ? WHERE user_id = ?"));
 
 			// user_idol_collection statements
-			preparedStatements.put(CuteGirl.GET_IDOLS_IN_DATABASE, connection.prepareStatement("SELECT * FROM user_idol_collection WHERE user_id = 0"));
-			preparedStatements.put(CuteGirl.GET_USER_IDOL_COLLECTION, connection.prepareStatement("SELECT * FROM user_idol_collection WHERE user_id = ?"));
+			preparedStatements.put(DatabaseUserManager.ADD_USER_IDOL_COLLECTION, connection.prepareStatement("INSERT INTO user_idol_collection (user_id) VALUES (?)"));
+			preparedStatements.put(DatabaseUserManager.GET_IDOLS_IN_DATABASE, connection.prepareStatement("SELECT * FROM user_idol_collection WHERE user_id = 0"));
+			preparedStatements.put(DatabaseUserManager.GET_USER_IDOL_COLLECTION, connection.prepareStatement("SELECT * FROM user_idol_collection WHERE user_id = ?"));
+
+			// user_inventory statements
+			preparedStatements.put(DatabaseUserManager.ADD_USER_INVENTORY, connection.prepareStatement("INSERT INTO user_inventory (user_id) VALUES (?)"));
+			preparedStatements.put(DatabaseUserManager.GET_USER_INVENTORY, connection.prepareStatement("SELECT * FROM user_inventory WHERE user_id = ?"));
 
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -115,7 +138,7 @@ public class Database {
 		List<String> columnNames = new ArrayList<String>();
 
 		try {
-			ResultSet resultSet = preparedStatements.get(CuteGirl.GET_IDOLS_IN_DATABASE).executeQuery();
+			ResultSet resultSet = preparedStatements.get(DatabaseUserManager.GET_IDOLS_IN_DATABASE).executeQuery();
 			ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
 
 			for (int i = 1; i <= resultSetMetaData.getColumnCount(); i += 1) {
@@ -149,7 +172,7 @@ public class Database {
 		}
 
 		try {
-			if (connection.createStatement().executeUpdate("ALTER TABLE user_idol_collection ADD COLUMN " + columnName + " TEXT DEFAULT \"" + defaultValue + "\"") == 0) {
+			if (connection.createStatement().executeUpdate("ALTER TABLE user_idol_collection ADD COLUMN " + columnName + " TEXT NOT NULL DEFAULT \"" + defaultValue + "\"") == 0) {
 				return (true);
 			}
 		} catch (SQLException e) {
@@ -159,12 +182,29 @@ public class Database {
 	}
 
 	public boolean updateIdolCollectionInDatabase(long userId, String columnName, String value) {
-		if (!idolsInDatabase.contains(columnName)) {
+		DatabaseUser user = DatabaseUserManager.getDatabaseUser(userId);
+		if (user == null || !idolsInDatabase.contains(columnName)) {
 			return (false);
 		}
 
 		try {
-			if (connection.createStatement().executeUpdate("UPDATE user_idol_collection SET " + columnName + " = \"" + value + "\" WHERE user_id = " + Long.toString(userId)) == 0) {
+			if (connection.createStatement().executeUpdate("UPDATE user_idol_collection SET " + columnName + " = \"" + value + "\" WHERE user_id = " + Long.toString(userId)) != -1) {
+				return (true);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return (false);
+	}
+
+	public boolean updateInventoryInDatabase(long userId, ItemType itemType, int value) {
+		DatabaseUser user = DatabaseUserManager.getDatabaseUser(userId);
+		if (user == null || itemType.equals(ItemType.UNKNOWN_ITEM)) {
+			return (false);
+		}
+
+		try {
+			if (connection.createStatement().executeUpdate("UPDATE user_inventory SET " + itemType.asString() + " = " + Integer.toString(value) + " WHERE user_id = " + Long.toString(userId)) != -1) {
 				return (true);
 			}
 		} catch (SQLException e) {

@@ -19,7 +19,8 @@ public class ShikiIchinose extends CuteGirl {
 	@Override
 	public Idol getIdol() {
 		return (new Idol(
-			0,"Shiki Ichinose", "一ノ瀬志希", IdolType.CUTE,
+			0, IdolTier.TIER_3,
+			"Shiki Ichinose", "一ノ瀬志希", IdolType.CUTE,
 			18, new Birthday(30, Month.MAY),
 			161, 43, new Measurement(83, 57, 82),
 			BloodType.O, Handedness.RIGHT,

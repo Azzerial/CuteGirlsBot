@@ -2,8 +2,10 @@ package net.azzerial.cgc.commands.currency;
 
 import net.azzerial.cgc.commands.Command;
 import net.azzerial.cgc.database.DatabaseUserManager;
+import net.azzerial.cgc.database.entities.DatabaseUser;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
+import net.azzerial.cgc.utils.MiscUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -19,7 +21,7 @@ public class PayCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 
@@ -28,12 +30,13 @@ public class PayCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "No user mentioned.", getGithubPage(), author,
 				"You need to mention to user you want to pay.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return ("No user mentioned.");
 		}
 
 		User user = mentionedUsers.get(0);
-		long mentionedUserBalance = DatabaseUserManager.getDatabaseUser(user.getIdLong()).getBalance();
+		DatabaseUser mentionedDatabaseUser = DatabaseUserManager.getDatabaseUser(user.getIdLong());
+		long mentionedUserBalance = mentionedDatabaseUser.getBalance();
 
 		long amount;
 		long currentBalance = databaseUser.getBalance();
@@ -45,7 +48,7 @@ public class PayCommand extends Command {
 					MessageUtil.sendErrorMessage(channel,
 						MessageUtil.ErrorType.ERROR, "Payment value is too big.", getGithubPage(), author,
 						"You can't pay that much money in one transaction.",
-						null, null, null);
+						null, null, true, MiscUtil.deleteOnTimeout);
 					return ("!Payment value is too big.");
 				}
 				amount = Long.parseLong(args[2]);
@@ -53,7 +56,7 @@ public class PayCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Incorrect payment value.", getGithubPage(), author,
 					"You must enter a number. `" + args[2] + "` isn't a valid payment value.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!Incorrect payment value.");
 			}
 		}
@@ -63,20 +66,20 @@ public class PayCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Balance doesn't contain enough money.", getGithubPage(), author,
 				"Your balance doesn't contain enough money in order to execute this payment.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return ("!Balance doesn't contain enough money.");
 		}
 		long balance = currentBalance - amount;
-		DatabaseUserManager.updateUserBalance(author.getIdLong(), balance);
+		databaseUser.updateBalance(balance);
 
 		// Send payment.
 		mentionedUserBalance += amount;
-		DatabaseUserManager.updateUserBalance(user.getIdLong(), mentionedUserBalance);
+		mentionedDatabaseUser.updateBalance(mentionedUserBalance);
 
 		MessageUtil.sendActionMessage(channel,
 			EmoteUtil.MONEY_WITH_WINGS, "Payment done", author,
 			"You payed " + user.getName() + " ¥`" + amount + "`. Updated balance: ¥`" + balance + "`",
-			null, null, null);
+			null, null, false, null);
 		return ("Payed [" + user.getName() + "](" + user.getId() + ").");
 	}
 

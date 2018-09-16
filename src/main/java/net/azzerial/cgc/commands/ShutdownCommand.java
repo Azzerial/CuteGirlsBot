@@ -3,6 +3,7 @@ package net.azzerial.cgc.commands;
 import net.azzerial.cgc.core.CGC;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
+import net.azzerial.cgc.utils.MiscUtil;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -17,7 +18,7 @@ public class ShutdownCommand extends Command {
 		MessageUtil.sendActionMessage(channel,
 			EmoteUtil.RIBBON, "Shutting down Cute Girls Collection", author,
 			"じゃね〜",
-			null,null,null);
+			null,null,false, null);
 		System.out.println("[Command/ShutdownCommand]: じゃね〜");
 		CGC.getAPI().shutdown();
 		try {

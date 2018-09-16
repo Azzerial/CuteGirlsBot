@@ -57,7 +57,7 @@ public class SlotsCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 
@@ -73,7 +73,7 @@ public class SlotsCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Empty wallet.", getGithubPage(), author,
 					"You can't bet all of your money as your wallet is empty.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!Empty wallet.");
 			}
 		} else {
@@ -83,7 +83,7 @@ public class SlotsCommand extends Command {
 					MessageUtil.sendErrorMessage(channel,
 						MessageUtil.ErrorType.ERROR, "Betting value is too big.", getGithubPage(), author,
 						"You can't bet that much money.",
-						null, null, null);
+						null, null, true, MiscUtil.deleteOnTimeout);
 					return ("!Betting value is too big.");
 				}
 				bet = Long.parseLong(args[1]);
@@ -91,7 +91,7 @@ public class SlotsCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Incorrect betting value.", getGithubPage(), author,
 					"You can either bet a number or \"all\". `" + args[1] + "` isn't a valid betting value.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!Incorrect betting value.");
 			}
 		}
@@ -102,7 +102,7 @@ public class SlotsCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Balance doesn't contain enough money.", getGithubPage(), author,
 				"Your balance doesn't contain enough money in order to execute this bet.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return ("!Balance doesn't contain enough money.");
 		} else if (bet == 0) {
 			noBet = true;
@@ -213,7 +213,7 @@ public class SlotsCommand extends Command {
 			EmoteUtil.SLOT_MACHINE, "Slots result", author,
 			"[ " + slots[0] + slots[1] + slots[2] + " ] " +
 				resultDescription + (noBet ? "" : " Updated balance: ¥`" + balance + "`"),
-			null, null, null);
+			null, null, false, null);
 		return ("Slots game displayed.");
 	}
 

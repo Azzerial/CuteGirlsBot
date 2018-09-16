@@ -1,8 +1,9 @@
-package net.azzerial.imcg.core;
+package net.azzerial.imcg.idols.core;
 
 import net.azzerial.imcg.entities.Idol;
+import net.azzerial.imcg.entities.utils.IdolTier;
+import net.azzerial.imcg.entities.utils.IdolType;
 import net.azzerial.imcg.idols.*;
-import net.azzerial.imcg.idols.core.CuteGirl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class IdolsList {
 		this.idols = new ArrayList<Idol>();
 
 		// Shiki Ichinose
-		idols.add(addToCGList(new ShikiIchinose()).getIdol());
+		idols.add(addToCGList(new ShikiIchinose()));
 	}
 
 	public static IdolsList loadIdols() {
@@ -29,9 +30,9 @@ public class IdolsList {
 		return (instance);
 	}
 
-	public CuteGirl addToCGList(CuteGirl cuteGirl) {
+	private Idol addToCGList(CuteGirl cuteGirl) {
 		cuteGirls.add(cuteGirl);
-		return (cuteGirl);
+		return (cuteGirl.getIdol());
 	}
 
 	public static Idol getIdol(int id) {
@@ -52,6 +53,28 @@ public class IdolsList {
 
 	public static List<Idol> getIdols() {
 		return (idols);
+	}
+
+	public static List<Idol> getIdolsByTier(IdolTier idolTier) {
+		List<Idol> idolsByTier = new ArrayList<Idol>();
+
+		idols.forEach(idol -> {
+			if (idol.getIdolTier().equals(idolTier)) {
+				idolsByTier.add(idol);
+			}
+		});
+		return (idolsByTier);
+	}
+
+	public static List<Idol> getIdolsByType(IdolType idolType) {
+		List<Idol> idolsByType = new ArrayList<Idol>();
+
+		idols.forEach(idol -> {
+			if (idol.getIdolType().equals(idolType)) {
+				idolsByType.add(idol);
+			}
+		});
+		return (idolsByType);
 	}
 
 	public static CuteGirl getCuteGirl(int id) {

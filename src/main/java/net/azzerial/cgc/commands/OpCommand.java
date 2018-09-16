@@ -5,6 +5,7 @@ import net.azzerial.cgc.core.CGCInfo;
 import net.azzerial.cgc.database.Permissions;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
+import net.azzerial.cgc.utils.MiscUtil;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -23,13 +24,12 @@ public class OpCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 		JDA api = event.getJDA();
 
-		if (args.length == 2
-			&& args[1].equalsIgnoreCase("list")) {
+		if (args.length == 2 && args[1].equalsIgnoreCase("list")) {
 			ArrayList<String> ops = Permissions.getOps();
 			Collections.sort(ops);
 			String ops_string = "";
@@ -42,12 +42,11 @@ public class OpCommand extends Command {
 			MessageUtil.sendSearchMessage(channel,
 				"Ops List", getGithubPage(), author,
 				null, null,"The following users are ops:\n" + ops_string,
-				null, null, null);
+				null, null, true, MiscUtil.clearReactionsOnTimeout);
 			return ("<List> Displayed the current Ops list.");
 		}
 
-		if (args.length == 3
-			&& args[1].equalsIgnoreCase("add")) {
+		if (args.length == 3 && args[1].equalsIgnoreCase("add")) {
 			User user = null;
 
 			if (!event.getMessage().getMentionedUsers().isEmpty()) {
@@ -57,7 +56,7 @@ public class OpCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Invalid parameter", getGithubPage(), author,
 					"`" + args[2] + "` isn't a valid parameter.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!<Add> User fed an invalid parameter. (" + args[2] + ")");
 			}
 			String username = event.getGuild().getMember(user).getEffectiveName();
@@ -65,18 +64,17 @@ public class OpCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "User already Op", getGithubPage(), author,
 					"`" + username + "` is already op.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!<Add> " + user.getName() + " is already op.");
 			}
 			MessageUtil.sendActionMessage(channel,
 				EmoteUtil.RIBBON, "User added to Ops", author,
 				"`" + username + "` has been added to the Ops list.",
-				null, null, null);
+				null, null, false, null);
 			return ("<Add> " + user.getName() + " has been added to the Ops list.");
 		}
 
-		if (args.length == 3
-			&& args[1].equalsIgnoreCase("remove")) {
+		if (args.length == 3 && args[1].equalsIgnoreCase("remove")) {
 			User user = null;
 
 			if (!event.getMessage().getMentionedUsers().isEmpty()) {
@@ -86,7 +84,7 @@ public class OpCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Invalid parameter", getGithubPage(), author,
 					"`" + args[2] + "` isn't a valid parameter.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!<Remove> User fed an invalid parameter. (" + args[2] + ")");
 			}
 			String username = event.getGuild().getMember(user).getEffectiveName();
@@ -95,27 +93,27 @@ public class OpCommand extends Command {
 					MessageUtil.sendErrorMessage(channel,
 						MessageUtil.ErrorType.PROHIBITED, "Bot author", getGithubPage(), author,
 						"`" + username + "` is the bot's author.\nYou can't remove him from the op list.",
-						null, null, null);
+						null, null, true, MiscUtil.deleteOnTimeout);
 					return ("!<Remove> User tried to remove the bot's author from the Ops list.");
 				} else {
 					MessageUtil.sendErrorMessage(channel,
 						MessageUtil.ErrorType.ERROR, "User isn't Op", getGithubPage(), author,
 						"`" + username + "` isn't op.",
-						null, null, null);
+						null, null, true, MiscUtil.deleteOnTimeout);
 					return ("!<Remove> " + user.getName() + " isn't op.");
 				}
 			}
 			MessageUtil.sendActionMessage(channel,
 				EmoteUtil.RIBBON, "User removed from Ops", author,
 				"`" + username + "` has been removed from the Ops list.",
-				null, null, null);
+				null, null, false, null);
 			return ("<Remove> " + user.getName() + " has been removed from the Ops list.");
 		}
 
 		MessageUtil.sendErrorMessage(channel,
 			MessageUtil.ErrorType.ERROR, "Wrong parameter.", getGithubPage(), author,
 			"The provided argument is invalid.",
-			null, null, null);
+			null, null, true, MiscUtil.deleteOnTimeout);
 		return ("!Unknown.");
 	}
 
@@ -134,17 +132,20 @@ public class OpCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return (null);
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/Op-Command");
 	}
 
 	@Override
 	public String getHelpDescription() {
-		return ("");
+		return ("Manages Cute Girls Collection's operators list.");
 	}
 
 	@Override
 	public String getHelpUsage() {
-		return ("");
+		return ("```md\n/op list\n/op <action> @user\n```\n" +
+			"Where `<action>` can either be:\n" +
+			"\t• *add*, if you want to add the mentioned user to the op list.\n" +
+			"\t• *remove*, if you want to remove the mentioned user from the op list.\n");
 	}
 
 	@Override

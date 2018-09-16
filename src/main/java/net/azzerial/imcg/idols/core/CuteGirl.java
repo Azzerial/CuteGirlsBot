@@ -4,13 +4,9 @@ import net.azzerial.cgc.database.Database;
 import net.azzerial.imcg.entities.Idol;
 import net.azzerial.imcg.entities.IdolSkin;
 
-import java.sql.ResultSet;
 import java.util.List;
 
 public abstract class CuteGirl {
-
-	public static final String GET_IDOLS_IN_DATABASE = "GET_IDOLS_IN_DATABASE";
-	public static final String GET_USER_IDOL_COLLECTION = "GET_USER_IDOL_COLLECTION";
 
 	public abstract Idol getIdol();
 	public abstract List<IdolSkin> getIdolSkins();
@@ -32,6 +28,7 @@ public abstract class CuteGirl {
 		if (skins == null) {
 			return (builder.toString());
 		}
+		builder.append("F;");
 		for (int i = 0; i < skins.size(); i += 1) {
 			builder.append(i).append(":0-0");
 			if (i + 1 < skins.size()) {

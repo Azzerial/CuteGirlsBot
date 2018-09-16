@@ -6,7 +6,8 @@ import net.azzerial.cgc.menu.entities.IdolMenu;
 import net.azzerial.cgc.menu.entities.ListingMenu;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
-import net.azzerial.imcg.core.IdolsList;
+import net.azzerial.cgc.utils.MiscUtil;
+import net.azzerial.imcg.idols.core.IdolsList;
 import net.azzerial.imcg.entities.Idol;
 import net.azzerial.imcg.entities.utils.IdolType;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -25,7 +26,7 @@ public class IdolCommand extends Command {
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Wrong usage.", getGithubPage(), author,
 				"The provided amount of arguments is invalid.",
-				null, null, null);
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return (INVALID_AMOUNT_OF_ARGUMENTS);
 		}
 
@@ -76,8 +77,8 @@ public class IdolCommand extends Command {
 
 			MessageUtil.sendErrorMessage(channel,
 				MessageUtil.ErrorType.ERROR, "Unhandled type argument.", getGithubPage(), author,
-				"The provided type argument(s) for the */idol list [type]* are unhandled.",
-				null, null, null);
+				"The provided type argument(s) for the `/idol list [type]` are unhandled.",
+				null, null, true, MiscUtil.deleteOnTimeout);
 			return ("!Unknown argument.");
 		}
 
@@ -93,7 +94,7 @@ public class IdolCommand extends Command {
 					MessageUtil.sendErrorMessage(channel,
 						MessageUtil.ErrorType.ERROR, "Invalid idol id.", getGithubPage(), author,
 						"We didn't find any idol with that id.",
-						null, null, null);
+						null, null, true, MiscUtil.deleteOnTimeout);
 					return ("!Invalid idol id.");
 				}
 
@@ -116,7 +117,7 @@ public class IdolCommand extends Command {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Invalid idol name.", getGithubPage(), author,
 					"We didn't find any idol with that name.",
-					null, null, null);
+					null, null, true, MiscUtil.deleteOnTimeout);
 				return ("!Invalid idol name.");
 			}
 
@@ -124,6 +125,7 @@ public class IdolCommand extends Command {
 			sendIdolInfoMessage(channel, idol, author);
 			return ("Displayed the idol's info.");
 		}
+		// Add no info provided.
 		return (UNKNOWN_CASE);
 	}
 
@@ -142,17 +144,25 @@ public class IdolCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return (null);
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/Idol-Information");
 	}
 
 	@Override
 	public String getHelpDescription() {
-		return ("");
+		return ("Displays a browsable menu containing all the information about an idol.");
 	}
 
 	@Override
 	public String getHelpUsage() {
-		return ("");
+		return ("```md\n/idol list [type]\n/idol info <search>\n```\n" +
+			"Where `[type]` is an optional parameter, and `<search>` a mandatory parameter.\n\n" +
+			"The `[type]` can either be:\n" +
+			"\t• *cute*, if you want to see the cute idols' list.\n" +
+			"\t• *cool*, if you want to see the cool idols' list.\n" +
+			"\t• *passion*, if you want to see the passion idols' list.\n" +
+			"And `<search>` must either be:\n" +
+			"\t• The idol's name.\n" +
+			"\t• The idol's id.");
 	}
 
 	@Override
@@ -165,7 +175,7 @@ public class IdolCommand extends Command {
 		return (false);
 	}
 
-	private void sendIdolListMessage(MessageChannel channel, User author, List<String> names, String title) {
+	private void sendIdolListMessage(MessageChannel channel, User author, List<String> idols, String title) {
 		ListingMenu menu = new ListingMenu.Builder()
 			.setMessageScheduler(CGC.getMessageScheduler())
 			.setUsers(author)
@@ -173,7 +183,7 @@ public class IdolCommand extends Command {
 			.setTitleEmote(EmoteUtil.RIBBON)
 			.setDescription("Use the message's reaction emotes to browse the list.\n" +
 				"If you want to know more about an idol, type: `/idol info <id>`.")
-			.setItems(names)
+			.setItems(idols)
 			.setItemsPerPage(5)
 			.setCodeblockLanguage("md")
 			.enablePageSkip(true)

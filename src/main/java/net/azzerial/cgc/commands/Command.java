@@ -7,12 +7,15 @@ import net.azzerial.cgc.core.CGCInfo;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.Permissions;
 import net.azzerial.cgc.database.entities.DatabaseUser;
+import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
+import net.azzerial.cgc.utils.MiscUtil;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public abstract class Command extends ListenerAdapter {
@@ -79,7 +82,7 @@ public abstract class Command extends ListenerAdapter {
 		MessageUtil.sendErrorMessage(channel,
 			MessageUtil.ErrorType.PROHIBITED, "Missing permission.", getGithubPage(), author,
 			(opCase ? Permissions.OP_REQUIRED_MESSAGE : Permissions.ADMIN_REQUIRED_MESSAGE),
-			null, null, null);
+			null, null, true, MiscUtil.deleteOnTimeout);
 	}
 
 }

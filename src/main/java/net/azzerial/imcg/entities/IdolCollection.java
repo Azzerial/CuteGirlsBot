@@ -1,9 +1,12 @@
 package net.azzerial.imcg.entities;
 
-import net.azzerial.imcg.core.IdolsList;
+import net.azzerial.cgc.database.DatabaseUserManager;
+import net.azzerial.imcg.entities.utils.IdolType;
+import net.azzerial.imcg.idols.core.IdolsList;
 import net.azzerial.imcg.entities.utils.Progress;
 import net.azzerial.imcg.entities.utils.SkinData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,7 +18,7 @@ public class IdolCollection {
 		this.collections = collections;
 	}
 
-	public static IdolCollection createNewEmptyCollection() {
+	public static IdolCollection createNewEmptyCollection(long userId) {
 		List<Idol> idols = IdolsList.getIdols();
 		Builder idolCollectionBuilder = new Builder();
 
@@ -24,7 +27,9 @@ public class IdolCollection {
 			List<IdolSkin> skins = idol.getSkins();
 			Collection.Builder collectionBuilder = new Collection.Builder();
 
+			collectionBuilder.setUserId(userId);
 			collectionBuilder.setIdolId(idol.getId());
+			collectionBuilder.isIdolOwned(false);
 			for (int n = 0; n < skins.size(); n++) {
 				collectionBuilder.addSkin(
 					skins.get(n).getId(),
@@ -47,6 +52,9 @@ public class IdolCollection {
 		if (idolName == null || idolName.isEmpty()) {
 			return (null);
 		}
+		if (idolName.contains("_")) {
+			idolName = idolName.replaceAll("_", " ");
+		}
 		return (getCollection(IdolsList.getIdol(idolName)));
 	}
 
@@ -61,10 +69,11 @@ public class IdolCollection {
 		return (collections.size());
 	}
 
-	public Progress getCollectionsProgress() {
+	public Progress getCollectionsCardsProgress() {
 		int size = 0;
 		int progress = 0;
 		Object[] keys = collections.keySet().toArray();
+
 		for (int i = 0; i < keys.length; i += 1) {
 			Collection collection = collections.get(keys[i]);
 			progress += collection.getCollectionProgress().getProgress();
@@ -77,6 +86,7 @@ public class IdolCollection {
 		int size = 0;
 		int progress = 0;
 		Object[] keys = collections.keySet().toArray();
+
 		for (int i = 0; i < keys.length; i += 1) {
 			Collection collection = collections.get(keys[i]);
 			progress += collection.getCollectionBasicCardProgress().getProgress();
@@ -89,12 +99,42 @@ public class IdolCollection {
 		int size = 0;
 		int progress = 0;
 		Object[] keys = collections.keySet().toArray();
+
 		for (int i = 0; i < keys.length; i += 1) {
 			Collection collection = collections.get(keys[i]);
 			progress += collection.getCollectionEvolvedCardProgress().getProgress();
 			size += collection.getCollectionEvolvedCardProgress().getSize();
 		}
 		return (new Progress(progress, size));
+	}
+
+	public List<Idol> getOwnedIdols() {
+		List<Idol> idols = new ArrayList<Idol>();
+		Object[] keys = collections.keySet().toArray();
+
+		for (int i = 0; i < keys.length; i += 1) {
+			Collection collection = collections.get(keys[i]);
+
+			if (collection.isIdolOwned()) {
+				idols.add(collection.getIdol());
+			}
+		}
+		return (idols);
+	}
+
+	public Progress getCollectionsIdolsProgress() {
+		return (new Progress(getOwnedIdols().size(), IdolsList.getIdols().size()));
+	}
+
+	public Progress getCollectionsIdolsByTypeProgress(IdolType idolType) {
+		List<Idol> idols = new ArrayList<Idol>();
+
+		getOwnedIdols().forEach(idol -> {
+			if (idol.getIdolType().equals(idolType)) {
+				idols.add(idol);
+			}
+		});
+		return (new Progress(idols.size(), IdolsList.getIdolsByType(idolType).size()));
 	}
 
 	public static class Builder {
@@ -117,16 +157,32 @@ public class IdolCollection {
 
 	public static class Collection {
 
+		private final long userId;
 		private final int idolId;
+		private boolean idolOwned;
 		private final HashMap<Integer, SkinData> skins;
 
-		public Collection(int idolId, HashMap<Integer, SkinData> skins) {
+		public Collection(long userId, int idolId, boolean idolOwned, HashMap<Integer, SkinData> skins) {
+			this.userId = userId;
 			this.idolId = idolId;
+			this.idolOwned = idolOwned;
 			this.skins = skins;
+		}
+
+		public long getUserId() {
+			return (userId);
+		}
+
+		public Idol getIdol() {
+			return (IdolsList.getIdol(idolId));
 		}
 
 		public int getIdolId() {
 			return (idolId);
+		}
+
+		public boolean isIdolOwned() {
+			return (idolOwned);
 		}
 
 		public SkinData getSkinData(int id) {
@@ -192,10 +248,11 @@ public class IdolCollection {
 			return (false);
 		}
 
-		public String convertToString() {
+		private String convertToString() {
 			StringBuilder builder = new StringBuilder();
 			Object[] keys = skins.keySet().toArray();
 
+			builder.append(idolOwned ? "T" : "F").append(";");
 			for (int i = 0; i < keys.length; i += 1) {
 				SkinData skin = skins.get(keys[i]);
 
@@ -211,17 +268,43 @@ public class IdolCollection {
 			return (builder.toString());
 		}
 
+		public boolean updateSkinData(SkinData skinData, boolean evolvedSkin, int value) {
+			if (evolvedSkin) {
+				skinData.updateEvolvedSkinCount(value);
+			} else {
+				skinData.updateBasicSkinCount(value);
+			}
+			return (DatabaseUserManager.updateUserIdolCollection(userId, IdolsList.getIdol(idolId).getDatabaseName(), convertToString()));
+		}
+
+		public boolean updateIdolOwn(boolean idolOwned) {
+			this.idolOwned = idolOwned;
+			return (DatabaseUserManager.updateUserIdolCollection(userId, IdolsList.getIdol(idolId).getDatabaseName(), convertToString()));
+		}
+
 		public static class Builder {
 
+			private long userId;
 			private int idolId;
+			private boolean idolOwned;
 			private HashMap<Integer, SkinData> skinsCount = new HashMap<Integer, SkinData>();
 
 			public Collection build() {
-				return (new Collection(idolId, skinsCount));
+				return (new Collection(userId, idolId, idolOwned, skinsCount));
+			}
+
+			public Builder setUserId(long userId) {
+				this.userId = userId;
+				return (this);
 			}
 
 			public Builder setIdolId(int idolId) {
 				this.idolId = idolId;
+				return (this);
+			}
+
+			public Builder isIdolOwned(boolean idolOwned) {
+				this.idolOwned = idolOwned;
 				return (this);
 			}
 
