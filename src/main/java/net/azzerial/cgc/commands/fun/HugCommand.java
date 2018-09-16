@@ -14,7 +14,26 @@ import java.util.List;
 public class HugCommand extends Command {
 
 	private final List<String> gifs = Arrays.asList(
-		""
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/1.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/2.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/3.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/4.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/5.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/6.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/7.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/8.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/9.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/10.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/11.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/12.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/13.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/14.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/15.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/16.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/17.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/18.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/19.gif",
+		"https://raw.githubusercontent.com/Azzerial/CuteGirlsCollection/master/rsc/hug/20.gif"
 	);
 
 	@Override
