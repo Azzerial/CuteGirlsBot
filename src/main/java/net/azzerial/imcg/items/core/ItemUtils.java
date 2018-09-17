@@ -35,7 +35,7 @@ public class ItemUtils {
 	}
 
 	public static final Message addIdolToCollection(DatabaseUser user, Idol idol) {
-		// the user either doesn't have the idol or
+		// the user either doesn't have the idol.
 		if (!user.getIdolCollection().getCollection(idol).isIdolOwned()) {
 			// give the idol to the user.
 			user.getIdolCollection().getCollection(idol).updateIdolOwn(true);

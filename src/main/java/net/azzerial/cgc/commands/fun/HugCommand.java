@@ -61,7 +61,7 @@ public class HugCommand extends Command {
 		MessageUtil.sendActionMessage(channel,
 			null, null, author,
 			EmoteUtil.REVOLVING_HEARTS + " " + author.getAsMention() + " hugs you " + user.getAsMention() + "!",
-			null, gif, true, MiscUtil.deleteOnTimeout);
+			null, gif, false, null);
 		return ("Successfully hugged the user.");
 	}
 

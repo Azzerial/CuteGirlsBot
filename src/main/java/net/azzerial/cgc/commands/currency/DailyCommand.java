@@ -17,6 +17,11 @@ import java.util.concurrent.TimeUnit;
 
 public class DailyCommand extends Command {
 
+	private final int dailyAmount = 200; // Daily pay base amount.
+	private final int dailyStreakAmount = 50; // Daily pay bonus base amount.
+	private final int dailyStreakMax = 46; // Max bonus streak.
+	private final int hours = 20; // Command cooldown.
+
 	@Override
 	public String onCommand(MessageReceivedEvent event, String[] args, MessageChannel channel, User author, User self) {
 		if (args.length != 1) {
@@ -32,13 +37,13 @@ public class DailyCommand extends Command {
 
 		if (lastDailyTime != null) {
 			GregorianCalendar nextTime = (GregorianCalendar) lastDailyTime.clone();
-			nextTime.add(Calendar.HOUR, 24);
+			nextTime.add(Calendar.HOUR, hours);
 
 			// Check the last claim date.
 			if (nextTime.compareTo(now) > 0) {
 				// Duration between last daily time date and now.
 				long diff = Duration.between(now.toZonedDateTime(), lastDailyTime.toZonedDateTime()).getSeconds();
-				diff += TimeUnit.HOURS.toSeconds(24);
+				diff += TimeUnit.HOURS.toSeconds(hours);
 
 				long hours = TimeUnit.HOURS.convert(diff, TimeUnit.SECONDS);
 				diff -= TimeUnit.HOURS.toSeconds(hours);
@@ -58,10 +63,6 @@ public class DailyCommand extends Command {
 				return ("!Daily pay already claimed.");
 			}
 		}
-
-		int dailyAmount = 100; // Daily pay base amount.
-		int dailyStreakAmount = 50; // Daily pay bonus base amount.
-		int dailyStreakMax = 18; // Max bonus streak.
 
 		int currentStreak = databaseUser.getDailyStreak(); // User's current bonus streak.
 		long currentBalance = databaseUser.getBalance(); // User's current balance.

@@ -69,7 +69,7 @@ public class MikaJougasaki extends CuteGirl {
 				new Card("https://www.project-imas.com/w/images/1/1e/Mika_SR11.jpg", "https://www.project-imas.com/w/images/thumb/1/1e/Mika_SR11.jpg/192px-Mika_SR11.jpg"),
 				new Card("https://www.project-imas.com/w/images/1/1c/Mika_SR11%2B.jpg", "https://www.project-imas.com/w/images/thumb/1/1c/Mika_SR11%2B.jpg/192px-Mika_SR11%2B.jpg")
 			), new IdolSkin(
-				6, "", "",
+				6, "Early Summer Vacation", "ｱｰﾘｰｻﾏｰﾊﾞｶﾝｽ",
 				Rarity.S_RARE,
 				new Stats(0, 0),
 				new Card("https://www.project-imas.com/w/images/f/f0/Mika_SR15.jpg", "https://www.project-imas.com/w/images/thumb/f/f0/Mika_SR15.jpg/192px-Mika_SR15.jpg"),

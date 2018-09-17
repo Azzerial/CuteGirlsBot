@@ -87,6 +87,9 @@ public class SlotsCommand extends Command {
 					return ("!Betting value is too big.");
 				}
 				bet = Long.parseLong(args[1]);
+				if (bet == currentBalance) {
+					allIn = true;
+				}
 			} else {
 				MessageUtil.sendErrorMessage(channel,
 					MessageUtil.ErrorType.ERROR, "Incorrect betting value.", getGithubPage(), author,
@@ -206,7 +209,7 @@ public class SlotsCommand extends Command {
 
 			// Update in database the values.
 			balance = currentBalance + money;
-			DatabaseUserManager.updateUserBalance(author.getIdLong(), balance);
+			databaseUser.updateBalance(balance);
 		}
 
 		MessageUtil.sendActionMessage(channel,

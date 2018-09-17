@@ -24,7 +24,7 @@ public class RikaJougasaki extends CuteGirl {
 			12, new Birthday(30, Month.JULY),
 			149, 39, new Measurement(72, 54, 75),
 			BloodType.B, Handedness.LEFT,
-			"",
+			"https://www.project-imas.com/w/images/3/36/Rika_SS.png",
 			getIdolSkins()
 		));
 	}

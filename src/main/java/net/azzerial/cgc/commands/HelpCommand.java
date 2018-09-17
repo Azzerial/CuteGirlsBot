@@ -57,7 +57,9 @@ public class HelpCommand extends Command {
 
 			EmbedBuilder builder = new EmbedBuilder();
 			builder.setTitle(EmoteUtil.OPEN_BOOK + " Cute Girls Collection commands.");
-			builder.setDescription(MiscUtil.listToString(list, ", ") + "\n\n" +
+			builder.setDescription("To know more about a command's usage, type `/help <command>`.\n" +
+				"Where `<command>` represents the name of a command from the list bellow.\n\n" +
+				MiscUtil.listToString(list, ", ") + "\n\n" +
 				"Commands having a `*` don't have a help page yet.");
 			builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 			builder.setColor(new Color(255, 226, 148));

@@ -1,6 +1,8 @@
 /.gradle/
 /.idea/
+/META-INF/
 /out/
 *.db
 *.json
 *.txt
+*.MF
