@@ -84,9 +84,9 @@ public class MiscUtil {
 		}
 	}
 
-	public static class sortDatabaseUserByIdolCollectionProgress implements Comparator<DatabaseUser> {
+	public static class sortDatabaseUserByIdolCollection implements Comparator<DatabaseUser> {
 		public int compare(DatabaseUser o1, DatabaseUser o2) {
-			return (o2.getIdolCollection().getCollectionsCardsProgress().getProgress() - o1.getIdolCollection().getCollectionsCardsProgress().getProgress());
+			return (o2.getIdolCollection().getScore() - o1.getIdolCollection().getScore());
 		}
 	}
 

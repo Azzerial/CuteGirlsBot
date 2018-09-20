@@ -33,7 +33,7 @@ public class IdolCollection {
 			for (int n = 0; n < skins.size(); n++) {
 				collectionBuilder.addSkin(
 					skins.get(n).getId(),
-					new SkinData(0, 0)
+					new SkinData(n, 0, 0)
 				);
 			}
 			idolCollectionBuilder.addIdol(idol.getId(), collectionBuilder.build());
@@ -122,6 +122,34 @@ public class IdolCollection {
 		return (idols);
 	}
 
+	public int getScore() {
+		int score = 0;
+		List<Idol> idols = getOwnedIdols();
+
+		for (int i = 0; i < idols.size(); i++) {
+			Idol idol = idols.get(i);
+			Collection collection = getCollection(idol);
+
+			if (collection.isIdolOwned()) {
+				List<IdolSkin> skins = idol.getSkins();
+				score += idol.getIdolTier().getScoreValue() * 5;
+
+				for (int j = 0; j < skins.size(); j += 1) {
+					IdolSkin skin = skins.get(j);
+					SkinData skinData = collection.getSkinData(skin);
+
+					if (skinData.hasBasicSkin()) {
+						score += (skin.getRarity().getValue() * 5) + skinData.getBasicSkinCount();
+					}
+					if (skinData.hasEvolvedSkin()) {
+						score += (skin.getRarity().getValue() * 5 * 1.5) + skinData.getEvolvedSkinCount();
+					}
+				}
+			}
+		}
+		return (score);
+	}
+
 	public Progress getCollectionsIdolsProgress() {
 		return (new Progress(getOwnedIdols().size(), IdolsList.getIdols().size()));
 	}
@@ -197,6 +225,19 @@ public class IdolCollection {
 				return (null);
 			}
 			return (getSkinData(skin.getId()));
+		}
+
+		public List<SkinData> getOwnedSkinData() {
+			List<SkinData> skinData = new ArrayList<SkinData>();
+			Object[] keys = skins.keySet().toArray();
+
+			for (int i = 0; i < keys.length; i += 1) {
+				SkinData skin = skins.get(keys[i]);
+				if (skin.hasBasicSkin() || skin.hasEvolvedSkin()) {
+					skinData.add(skin);
+				}
+			}
+			return (skinData);
 		}
 
 		public Progress getCollectionProgress() {

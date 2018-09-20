@@ -33,7 +33,7 @@ public class DebugUtil extends ListenerAdapter {
 			return;
 		}
 		// Prints the unicode value of the emote.
-		EmoteUtil.printStringUnicode(event);
+		// EmoteUtil.printStringUnicode(event);
 		// Check for known shortcut emotes.
 		RestAction<Message> restAction = event.getChannel().getMessageById(event.getMessageIdLong());
 		switch (event.getReactionEmote().getName()) {

@@ -144,11 +144,11 @@ public class ItemUtils {
 			"`Amount Received` " + skin.getCount() + "\n" +
 				"`Idol Name` " + skin.getIdol().getName() + "\n" +
 				"`Card Name` " + skin.getSkin().getThemeName() + "\n" +
-				"`Rarity` " + skin.getSkin().getRarity().asString() + (skin.isEvolved() ? "+" : "") + "\n" +
+				"`Rarity` " + skin.getSkin().getRarity().asString() + (skin.isEvolved() ? "+" : "") + /*"\n" +
 				(skin.isEvolved() ? "`Attack` " + skin.getSkin().getStats().getAttack(Stats.EVOLVED_BONUS) + "\n" +
 					"`Defense` " + skin.getSkin().getStats().getDefense(Stats.EVOLVED_BONUS)
 					: "`Attack` " + skin.getSkin().getStats().getBaseAttack() + "\n" +
-					"`Defense` " + skin.getSkin().getStats().getBaseDefense()) + "\n\n" +
+					"`Defense` " + skin.getSkin().getStats().getBaseDefense()) + */"\n\n" +
 				"Press " + EmoteUtil.BALLOT_BOX_CHECK + " to continue.",
 			null, (skin.isEvolved() ? skin.getSkin().getEvolvedCard().getCard() : skin.getSkin().getBasicCard().getCard())
 		));

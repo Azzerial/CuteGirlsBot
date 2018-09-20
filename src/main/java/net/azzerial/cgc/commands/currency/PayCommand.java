@@ -78,7 +78,8 @@ public class PayCommand extends Command {
 
 		MessageUtil.sendActionMessage(channel,
 			EmoteUtil.MONEY_WITH_WINGS, "Payment done", author,
-			"You payed " + user.getName() + " ¥`" + amount + "`. Updated balance: ¥`" + balance + "`",
+			"You payed " + user.getName() + " ¥`" + amount + "`, and now has ¥`" + mentionedUserBalance + "`.\n" +
+				"Updated balance: ¥`" + balance + "`",
 			null, null, false, null);
 		return ("Payed [" + user.getName() + "](" + user.getId() + ").");
 	}

@@ -4,8 +4,11 @@ import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.entities.DatabaseUser;
 import net.azzerial.cgc.menu.core.Menu;
 import net.azzerial.cgc.menu.core.MessageScheduler;
+import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MessageUtil;
 import net.azzerial.imcg.entities.Idol;
+import net.azzerial.imcg.entities.IdolSkin;
+import net.azzerial.imcg.entities.utils.SkinData;
 import net.azzerial.imcg.idols.core.IdolsList;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -22,6 +25,7 @@ import java.util.function.Consumer;
 
 public class CollectionMenu extends Menu {
 
+	private static final String DRESS = "\uD83D\uDC57";
 	private static final String JAPANESE_DOLLS = "\ud83c\udf8e";
 	private static final String BACK_ARROW = "\uD83D\uDD19";
 	private static final String PLAY = "\u25B6";
@@ -34,8 +38,12 @@ public class CollectionMenu extends Menu {
 	private final DatabaseUser databaseUser;
 
 	private static boolean isDisplayingIdolProgress;
-	private static int idolId;
-	private final List<Idol> idols = IdolsList.getIdols();
+	private static boolean isDisplayingIdolSkins;
+	private static List<SkinData> skins = new ArrayList<SkinData>();
+	private static int skinIndex;
+	private static boolean evolvedSkin;
+	private final List<Idol> idols;
+	private static int idolIndex;
 
 	public CollectionMenu(MessageScheduler scheduler, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit, User user, boolean closable, Consumer<Message> timeoutAction) {
 		super(scheduler, users, roles, timeout, unit);
@@ -43,12 +51,17 @@ public class CollectionMenu extends Menu {
 		this.closable = closable;
 		this.timeoutAction = timeoutAction;
 		this.databaseUser = DatabaseUserManager.getDatabaseUser(user.getIdLong());
+
+		this.idols = databaseUser.getIdolCollection().getOwnedIdols();
 	}
 
 	@Override
 	public void display(MessageChannel channel) {
 		isDisplayingIdolProgress = false;
-		idolId = 0;
+		idolIndex = 0;
+		isDisplayingIdolSkins = false;
+		skinIndex = 0;
+		evolvedSkin = false;
 
 		initialize(channel.sendMessage(getCollectionProgressMessage()));
 	}
@@ -56,12 +69,28 @@ public class CollectionMenu extends Menu {
 	private void initialize(RestAction<Message> restAction) {
 		List<String> emotes = new ArrayList<String>();
 
-		if (isDisplayingIdolProgress) {
+		if (isDisplayingIdolSkins) {
 			emotes.add(BACK_ARROW);
-			emotes.add(REVERSE);
-			emotes.add(PLAY);
+			if (skins.size() != 1) {
+				emotes.add(REVERSE);
+				emotes.add(PLAY);
+			}
 		} else {
-			emotes.add(JAPANESE_DOLLS);
+			if (isDisplayingIdolProgress) {
+				emotes.add(BACK_ARROW);
+				if (idols.size() != 1) {
+					emotes.add(REVERSE);
+				}
+				skins = databaseUser.getIdolCollection().getCollection(idols.get(idolIndex)).getOwnedSkinData();
+				emotes.add(DRESS);
+				if (idols.size() != 1) {
+					emotes.add(PLAY);
+				}
+			} else {
+				if (!idols.isEmpty()) {
+					emotes.add(JAPANESE_DOLLS);
+				}
+			}
 		}
 		if (closable) {
 			emotes.add(HEAVY_MULTIPLICATION_X);
@@ -100,18 +129,40 @@ public class CollectionMenu extends Menu {
 				switch (event.getReaction().getReactionEmote().getName()) {
 					case (JAPANESE_DOLLS):
 						isDisplayingIdolProgress = true;
-						idolId = 0;
+						idolIndex = 0;
 						clearAllReactions = true;
 						break;
+					case DRESS:
+						if (skins != null && !skins.isEmpty()) {
+							isDisplayingIdolSkins = true;
+							isDisplayingIdolProgress = false;
+							skinIndex = 0;
+							evolvedSkin = false;
+							clearAllReactions = true;
+						}
+						break;
 					case (BACK_ARROW):
-						isDisplayingIdolProgress = false;
+						if (isDisplayingIdolProgress) {
+							isDisplayingIdolProgress = false;
+						} else if (isDisplayingIdolSkins) {
+							isDisplayingIdolSkins = false;
+							isDisplayingIdolProgress = true;
+						}
 						clearAllReactions = true;
 						break;
 					case (REVERSE):
-						changeIdolPage(false);
+						if (isDisplayingIdolProgress) {
+							changeIdolPage(false);
+						} else if (isDisplayingIdolSkins) {
+							changeSkinPage(false);
+						}
 						break;
 					case (PLAY):
-						changeIdolPage(true);
+						if (isDisplayingIdolProgress) {
+							changeIdolPage(true);
+						} else if (isDisplayingIdolSkins) {
+							changeSkinPage(true);
+						}
 						break;
 					case (HEAVY_MULTIPLICATION_X):
 						message.delete().queue();
@@ -122,13 +173,17 @@ public class CollectionMenu extends Menu {
 				}
 
 				if (clearAllReactions) {
-					if (isDisplayingIdolProgress) {
+					if (isDisplayingIdolSkins) {
+						message.clearReactions().queue(m -> initialize(message.editMessage(getIdolSkinMessage())));
+					} else if (isDisplayingIdolProgress) {
 						message.clearReactions().queue(m -> initialize(message.editMessage(getIdolProgressMessage())));
 					} else {
 						message.clearReactions().queue(m -> initialize(message.editMessage(getCollectionProgressMessage())));
 					}
 				} else {
-					if (isDisplayingIdolProgress) {
+					if (isDisplayingIdolSkins) {
+						initialize(message.editMessage(getIdolSkinMessage()));
+					} else if (isDisplayingIdolProgress) {
 						initialize(message.editMessage(getIdolProgressMessage()));
 					} else {
 						initialize(message.editMessage(getCollectionProgressMessage()));
@@ -139,16 +194,60 @@ public class CollectionMenu extends Menu {
 	}
 
 	private void changeIdolPage(boolean goToNextPage) {
+		if (idols.isEmpty()) {
+			return;
+		}
 		if (goToNextPage) {
-			idolId += 1;
+			idolIndex += 1;
 		} else {
-			idolId -= 1;
+			idolIndex -= 1;
 		}
 
-		if (idolId < 0) {
-			idolId = idols.size() - 1;
-		} else if (idolId >= idols.size()) {
-			idolId = 0;
+		if (idolIndex < 0) {
+			idolIndex = idols.size() - 1;
+		} else if (idolIndex >= idols.size()) {
+			idolIndex = 0;
+		}
+	}
+
+	private void changeSkinPage(boolean goToNextPage) {
+		if (skins.isEmpty()) {
+			return;
+		}
+		if (goToNextPage) {
+			if (!evolvedSkin) {
+				if (skins.get(skinIndex).hasEvolvedSkin()) {
+					evolvedSkin = true;
+				} else {
+					skinIndex += 1;
+				}
+			} else {
+				evolvedSkin = false;
+				skinIndex += 1;
+			}
+		} else {
+			if (evolvedSkin) {
+				if (skins.get(skinIndex).hasBasicSkin()) {
+					evolvedSkin = false;
+				} else {
+					skinIndex -= 1;
+				}
+			} else {
+				evolvedSkin = true;
+				skinIndex -= 1;
+			}
+		}
+
+		if (skinIndex < 0) {
+			skinIndex = skins.size() - 1;
+		} else if (skinIndex >= skins.size()) {
+			skinIndex = 0;
+		}
+
+		if (!evolvedSkin && !skins.get(skinIndex).hasBasicSkin()) {
+			evolvedSkin = true;
+		} else if (evolvedSkin && !skins.get(skinIndex).hasEvolvedSkin()) {
+			evolvedSkin = false;
 		}
 	}
 
@@ -157,7 +256,12 @@ public class CollectionMenu extends Menu {
 	}
 
 	private Message getIdolProgressMessage() {
-		return (MessageUtil.getIdolCollectionIdolMessage(idols.get(idolId), user, databaseUser, getAuthor()));
+		return (MessageUtil.getIdolCollectionIdolMessage(idols.get(idolIndex), user, databaseUser, getAuthor()));
+	}
+
+	private Message getIdolSkinMessage() {
+		Idol idol = idols.get(idolIndex);
+		return (MessageUtil.getIdolCollectionSkinMessage(idol, skins.get(skinIndex), evolvedSkin, getAuthor()));
 	}
 
 	public static class Builder extends Menu.Builder<Builder, CollectionMenu> {

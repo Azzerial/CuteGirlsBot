@@ -85,7 +85,7 @@ public class DatabaseUserManager {
 						int basicSkinCount = Integer.parseInt(s2[0]);
 						int evolvedSkinCount = Integer.parseInt(s2[1]);
 
-						collectionBuilder.addSkin(skinId, new SkinData(basicSkinCount, evolvedSkinCount));
+						collectionBuilder.addSkin(skinId, new SkinData(n, basicSkinCount, evolvedSkinCount));
 					}
 					idolCollectionBuilder.addIdol(idol.getId(), collectionBuilder.build());
 				}
@@ -241,6 +241,11 @@ public class DatabaseUserManager {
 
 	// --- Class ---
 
+
+	public static ArrayList<DatabaseUser> getUsersCache() {
+		return (new ArrayList(usersCache));
+	}
+
 	public static boolean isUserInDatabase(long id) {
 		for (int i = 0; i < usersCache.size(); i += 1) {
 			if (usersCache.get(i).getId() == id) {
@@ -265,7 +270,7 @@ public class DatabaseUserManager {
 		// Order the users based on their IdolCollection's progress value.
 		switch (rankingType) {
 			case IDOL_COLLECTION:
-				Collections.sort(orderedUsers, new MiscUtil.sortDatabaseUserByIdolCollectionProgress());
+				Collections.sort(orderedUsers, new MiscUtil.sortDatabaseUserByIdolCollection());
 				break;
 			case BALANCE:
 				Collections.sort(orderedUsers, new MiscUtil.sortDatabaseUserByBalance());
@@ -282,7 +287,7 @@ public class DatabaseUserManager {
 
 			switch (rankingType) {
 				case IDOL_COLLECTION:
-					if (lastProgressValue != u.getIdolCollection().getCollectionsCardsProgress().getProgress()) {
+					if (lastProgressValue != u.getIdolCollection().getScore()) {
 						rank = i;
 					}
 					break;

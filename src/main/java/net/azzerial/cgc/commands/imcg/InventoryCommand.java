@@ -40,7 +40,8 @@ public class InventoryCommand extends Command {
 	@Override
 	public List<String> getAliases() {
 		return (Arrays.asList(
-			"inventory"
+			"inventory",
+			"inv"
 		));
 	}
 

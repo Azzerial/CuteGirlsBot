@@ -13,6 +13,7 @@ public class EmoteUtil {
 	public static final String DRESS = "\uD83D\uDC57";
 	public static final String HANDBAG = "\uD83D\uDC5C";
 	public static final String JAPANESE_DOLLS = "\ud83c\udf8e";
+	public static final String KISS_MARK = "\ud83d\udc8b";
 	public static final String LABEL = "\uD83C\uDFF7";
 	public static final String LIGHT_BULB = "\uD83D\uDCA1";
 	public static final String MEMO = "\uD83D\uDCDD";
@@ -21,6 +22,7 @@ public class EmoteUtil {
 	public static final String OPEN_BOOK = "\uD83D\uDCD6";
 	public static final String PROHIBITED = "\uD83D\uDEAB";
 	public static final String PURSE = "\uD83D\uDC5B";
+	public static final String RAISED_HAND = "\u270B";
 	public static final String REVOLVING_HEARTS = "\ud83d\udc9e";
 	public static final String RIBBON = "\uD83C\uDF80";
 	public static final String SHOPPING_BAGS = "\uD83D\uDECD";

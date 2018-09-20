@@ -1,9 +1,11 @@
 package net.azzerial.cgc.commands;
 
+import net.azzerial.cgc.core.CGC;
 import net.azzerial.cgc.database.DatabaseUserManager;
 import net.azzerial.cgc.database.entities.DatabaseUser;
 import net.azzerial.cgc.database.entities.utils.Rank;
 import net.azzerial.cgc.database.entities.utils.RankingType;
+import net.azzerial.cgc.menu.entities.ListingMenu;
 import net.azzerial.cgc.utils.EmoteUtil;
 import net.azzerial.cgc.utils.MiscUtil;
 import net.azzerial.imcg.entities.Idol;
@@ -23,6 +25,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TestCommand extends Command {
@@ -32,28 +35,6 @@ public class TestCommand extends Command {
 
 	@Override
 	public String onCommand(MessageReceivedEvent event, String[] args, MessageChannel channel, User author, User self) {
-		Idol idol = IdolsList.getIdol("Shiki Ichinose");
-
-		channel.sendMessage(userIdolCollectionOverviewMessage(author, author)).queue(m -> {
-			List<String> emotes = new ArrayList<String>();
-
-			emotes.add(EmoteUtil.JAPANESE_DOLLS);
-
-			for (int i = 0; i < emotes.size(); i += 1) {
-				m.addReaction(emotes.get(i)).queue();
-			}
-		});
-		channel.sendMessage(userIdolCollectionIdolsListMessage(idol, author, author)).queue(m -> {
-			List<String> emotes = new ArrayList<String>();
-
-			emotes.add(EmoteUtil.BACK_ARROW);
-			emotes.add(REVERSE);
-			emotes.add(PLAY);
-
-			for (int i = 0; i < emotes.size(); i += 1) {
-				m.addReaction(emotes.get(i)).queue();
-			}
-		});
 		return ("Tested.");
 	}
 

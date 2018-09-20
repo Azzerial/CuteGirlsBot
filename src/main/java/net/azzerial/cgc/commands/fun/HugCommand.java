@@ -80,7 +80,7 @@ public class HugCommand extends Command {
 
 	@Override
 	public String getGithubPage() {
-		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/Hug");
+		return ("https://github.com/Azzerial/CuteGirlsCollection/wiki/Anime-Gifs");
 	}
 
 	@Override

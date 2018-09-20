@@ -11,6 +11,8 @@ import javax.security.auth.login.LoginException;
 import net.azzerial.cgc.commands.*;
 import net.azzerial.cgc.commands.currency.*;
 import net.azzerial.cgc.commands.fun.HugCommand;
+import net.azzerial.cgc.commands.fun.KissCommand;
+import net.azzerial.cgc.commands.fun.SlapCommand;
 import net.azzerial.cgc.commands.imcg.*;
 import net.azzerial.cgc.database.Database;
 import net.azzerial.cgc.database.DatabaseUserManager;
@@ -105,17 +107,21 @@ public class CGC {
 			jda_builder.addEventListener(command.registerCommand(new HugCommand()));
 			jda_builder.addEventListener(command.registerCommand(new IdolCommand()));
 			jda_builder.addEventListener(command.registerCommand(new InventoryCommand()));
+			jda_builder.addEventListener(command.registerCommand(new KissCommand()));
+			jda_builder.addEventListener(command.registerCommand(new LeaderboardCommand()));
 			jda_builder.addEventListener(command.registerCommand(new OpCommand()));
 			jda_builder.addEventListener(command.registerCommand(new PayCommand()));
+			jda_builder.addEventListener(command.registerCommand(new ResetCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShopCommand()));
 			jda_builder.addEventListener(command.registerCommand(new ShutdownCommand()));
+			jda_builder.addEventListener(command.registerCommand(new SlapCommand()));
 			jda_builder.addEventListener(command.registerCommand(new SlotsCommand()));
 			jda_builder.addEventListener(command.registerCommand(new TestCommand()));
 
 			// Add some needed event listeners.
 			scheduler = new MessageScheduler(Executors.newSingleThreadScheduledExecutor());
 			jda_builder.addEventListener(scheduler);
-			jda_builder.addEventListener(new DebugUtil(false));
+			jda_builder.addEventListener(new DebugUtil(true));
 
 			// Login to Discord.
 			api = jda_builder.buildBlocking();

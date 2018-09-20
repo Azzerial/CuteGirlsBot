@@ -14,6 +14,7 @@ import net.azzerial.imcg.entities.IdolCollection;
 import net.azzerial.imcg.entities.IdolSkin;
 import net.azzerial.imcg.entities.utils.IdolType;
 import net.azzerial.imcg.entities.utils.Progress;
+import net.azzerial.imcg.entities.utils.SkinData;
 import net.azzerial.imcg.entities.utils.Stats;
 import net.azzerial.imcg.items.core.ItemType;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -652,7 +653,7 @@ public class MessageUtil {
 
 		EmbedBuilder builder = new EmbedBuilder();
 		builder.setAuthor(idol.getName(), null, idol.getIdolType().getIcon());
-		builder.setDescription("`Owned` " + (collection.isIdolOwned() ? "True" : "False"));
+	//	builder.setDescription("`Owned` " + (collection.isIdolOwned() ? "True" : "False"));
 		builder.addField("Idol's cards progress", "" +
 				"All cards: `" + cardsProgress.getProgress() + "/" + cardsProgress.getSize() + "` (" + cardsProgress.getPercentageAsString() + ")\n" +
 				"Basic: `" + basicCardProgress.getProgress() + "/" + basicCardProgress.getSize() + "` (" + basicCardProgress.getPercentageAsString() + ")\n" +
@@ -661,6 +662,22 @@ public class MessageUtil {
 		builder.setThumbnail(idol.getProfilePicture());
 		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
 		builder.setColor(new Color(255, 175, 225));
+		MessageEmbed embed = builder.build();
+		MessageBuilder mBuilder = new MessageBuilder(embed);
+		return (mBuilder.build());
+	}
+
+	public static Message getIdolCollectionSkinMessage(Idol idol, SkinData skinData, boolean evolved, User author) {
+		EmbedBuilder builder = new EmbedBuilder();
+		IdolSkin skin = idol.getSkin(skinData.getSkinId());
+
+		builder.setAuthor(skin.getThemeName(), null, idol.getIdolType().getIcon());
+		builder.setTitle("Amount owned: " + (evolved ? skinData.getEvolvedSkinCount() : skinData.getBasicSkinCount()));
+		builder.setDescription("Rarity: " + skin.getRarity().asString() + (evolved ? "+" : "") + "\n" +
+			(evolved ? "Evolved" : "Basic") + " card `" + (skinData.getSkinId() + 1) + "/" + idol.getSkins().size() + "`");
+		builder.setImage(evolved ? skin.getEvolvedCard().getCard() : skin.getBasicCard().getCard());
+		builder.setFooter(author.getName() + "#" + author.getDiscriminator(), author.getAvatarUrl());
+		builder.setColor(idol.getIdolType().getColor());
 		MessageEmbed embed = builder.build();
 		MessageBuilder mBuilder = new MessageBuilder(embed);
 		return (mBuilder.build());

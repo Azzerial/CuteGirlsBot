@@ -2,12 +2,18 @@ package net.azzerial.imcg.entities.utils;
 
 public class SkinData {
 
+	private int skinId;
 	private int basicSkinCount;
 	private int evolvedSkinCount;
 
-	public SkinData(int basicSkinCount, int evolvedSkinCount) {
+	public SkinData(int skinId, int basicSkinCount, int evolvedSkinCount) {
+		this.skinId = skinId;
 		this.basicSkinCount = (basicSkinCount < 0 ? 0 : basicSkinCount) ;
 		this.evolvedSkinCount = (evolvedSkinCount < 0 ? 0 : evolvedSkinCount);
+	}
+
+	public int getSkinId() {
+		return (skinId);
 	}
 
 	public int getBasicSkinCount() {

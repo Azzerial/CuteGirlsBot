@@ -15,6 +15,18 @@ public enum IdolTier {
 		return (tier);
 	}
 
+	public int getScoreValue() {
+		switch (this) {
+			case TIER_1:
+				return (20);
+			case TIER_2:
+				return (10);
+			case TIER_3:
+				return (5);
+		}
+		return (0);
+	}
+
 	public String asString() {
 		switch (this) {
 			case TIER_1:
